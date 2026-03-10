@@ -75,7 +75,7 @@ const Index = () => {
 
           {/* Tab nav */}
           <div className="flex rounded-lg border border-border overflow-hidden">
-            {(["data", "charts", "map"] as const).map(tab => (
+            {(["data", "charts", "forecast", "map"] as const).map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
