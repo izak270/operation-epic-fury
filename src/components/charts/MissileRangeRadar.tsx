@@ -87,6 +87,18 @@ const MissileRangeRadar: React.FC = () => {
                       {m.preWarQty ? m.preWarQty.toLocaleString() : "—"}
                     </span>
                   </td>
+                  <td className="text-center px-2 py-2.5 bg-loss/5">
+                    {prod ? (
+                      <div>
+                        <span className="font-heebo font-bold text-loss text-sm">{prod.currentQty.toLocaleString()}</span>
+                        {m.preWarQty && (
+                          <div className="text-[9px] text-loss/70 font-heebo font-semibold mt-0.5">
+                            {Math.round(((prod.currentQty - m.preWarQty) / m.preWarQty) * 100)}%
+                          </div>
+                        )}
+                      </div>
+                    ) : "—"}
+                  </td>
                   <td className="text-center px-2 py-2.5 font-frank tabular-nums text-foreground">
                     {m.unitCostUSD ? formatUSD(m.unitCostUSD) : "—"}
                   </td>
@@ -100,6 +112,17 @@ const MissileRangeRadar: React.FC = () => {
                         <span className="text-muted-foreground font-frank text-[10px]"> /{lang === "he" ? "שנה" : "yr"}</span>
                         <div className="text-[9px] text-muted-foreground font-frank mt-0.5">
                           {lang === "he" ? prod.noteHe : prod.noteEn}
+                        </div>
+                      </div>
+                    ) : "—"}
+                  </td>
+                  <td className="text-center px-2 py-2.5 hidden md:table-cell bg-loss/5">
+                    {prod ? (
+                      <div>
+                        <span className="font-heebo font-bold text-loss text-sm">{prod.currentRatePerYear}</span>
+                        <span className="text-muted-foreground font-frank text-[10px]"> /{lang === "he" ? "שנה" : "yr"}</span>
+                        <div className="text-[9px] text-loss/70 font-heebo font-semibold mt-0.5">
+                          {Math.round(((prod.currentRatePerYear - prod.ratePerYear) / prod.ratePerYear) * 100)}%
                         </div>
                       </div>
                     ) : "—"}
