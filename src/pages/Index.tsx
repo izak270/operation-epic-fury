@@ -167,6 +167,8 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      <FeedbackForm />
     </div>
   );
 };
