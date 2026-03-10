@@ -58,7 +58,7 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
               {/* Note */}
               {note && (
                 <span className="text-[10px] text-muted-foreground font-frank italic">
-                  {note === "est." ? t("label.est") : note === "N/A" ? t("label.na") : note}
+                  {note === "est." ? t("label.est") : note === "N/A" ? t("label.na") : note === "since Oct 2023" ? t("note.since_oct_2023") : note}
                 </span>
               )}
 
