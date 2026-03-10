@@ -27,7 +27,11 @@ const propulsionLabels: Record<string, Record<string, string>> = {
   turbojet: { en: "Turbojet", he: "טורבוסילון" },
 };
 
-const MissileRangeRadar: React.FC = () => {
+interface MissileRangeRadarProps {
+  highlightId?: string | null;
+}
+
+const MissileRangeRadar: React.FC<MissileRangeRadarProps> = ({ highlightId }) => {
   const { lang, t } = useLanguage();
   const iranMissiles = getIranMissiles();
 
@@ -60,7 +64,7 @@ const MissileRangeRadar: React.FC = () => {
             {iranMissiles.map((m, i) => {
               const prod = productionEstimates[m.id];
               return (
-                <tr key={m.id} className={`border-b border-border/50 transition-colors hover:bg-muted/20 ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
+                <tr key={m.id} id={`missile-row-${m.id}`} className={`border-b border-border/50 transition-all duration-500 hover:bg-muted/20 ${highlightId === m.id ? "bg-primary/20" : i % 2 === 0 ? "" : "bg-muted/10"}`}>
                   <td className="px-3 py-2.5">
                     <div className="font-heebo font-bold text-foreground text-sm">
                       {lang === "he" ? m.nameHe : m.nameEn}

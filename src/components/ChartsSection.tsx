@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 import FireRateCollapseChart from "@/components/charts/FireRateCollapseChart";
@@ -21,6 +21,24 @@ interface ChartCard {
 
 const ChartsSection: React.FC = () => {
   const { t } = useLanguage();
+  const [highlightedMissileId, setHighlightedMissileId] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleMissileClick = useCallback((id: string) => {
+    setHighlightedMissileId(id);
+    clearTimeout(highlightTimer.current);
+
+    // Scroll to the radar table row
+    setTimeout(() => {
+      const row = document.getElementById(`missile-row-${id}`);
+      row?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+
+    // Clear highlight after 3s
+    highlightTimer.current = setTimeout(() => {
+      setHighlightedMissileId(null);
+    }, 3000);
+  }, []);
 
   const charts: ChartCard[] = [
     {
@@ -69,13 +87,13 @@ const ChartsSection: React.FC = () => {
       titleKey: "chart.missileMap.title",
       subtitleKey: "chart.missileMap.subtitle",
       sourceKey: "chart.missileMap.source",
-      component: <MissileRangeMap />,
+      component: <MissileRangeMap onMissileClick={handleMissileClick} />,
     },
     {
       titleKey: "chart.missileRadar.title",
       subtitleKey: "chart.missileRadar.subtitle",
       sourceKey: "chart.missileRadar.source",
-      component: <MissileRangeRadar />,
+      component: <MissileRangeRadar highlightId={highlightedMissileId} />,
     },
     {
       titleKey: "chart.casualty.title",

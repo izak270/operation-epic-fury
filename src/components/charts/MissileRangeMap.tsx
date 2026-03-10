@@ -207,7 +207,11 @@ const getHeatColor = (countryId: string): string | null => {
   return `hsla(0, 70%, 50%, ${intensity})`;
 };
 
-const MissileRangeMap: React.FC = () => {
+interface MissileRangeMapProps {
+  onMissileClick?: (id: string) => void;
+}
+
+const MissileRangeMap: React.FC<MissileRangeMapProps> = ({ onMissileClick }) => {
   const { lang } = useLanguage();
   const iranMissiles = getIranMissiles();
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -560,7 +564,10 @@ const MissileRangeMap: React.FC = () => {
               }`}
               onMouseEnter={() => setActiveId(m.id)}
               onMouseLeave={() => setActiveId(null)}
-              onClick={() => setActiveId(activeId === m.id ? null : m.id)}
+              onClick={() => {
+                setActiveId(activeId === m.id ? null : m.id);
+                onMissileClick?.(m.id);
+              }}
             >
               <div className="flex items-center gap-2 mb-0.5">
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
