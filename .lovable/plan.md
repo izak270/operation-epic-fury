@@ -1,57 +1,52 @@
 
 
-## 10 Interactive Charts — Implementation Plan
+## כן, אני יכול לעמוד בזה. הנה התוכנית המפורטת:
 
-### New Data Files
+התוכנית כוללת יצירת **5 קבצי נתונים חדשים**, **10 קומפוננטות גרפים**, **קומפוננטת מעטפת**, ועדכון הדף הראשי והתרגומים.
 
-**`src/data/launchData.ts`** — Daily Iranian launch timeline (Feb 28 – Mar 9, 2026) with ballistic missiles and UAVs per day, events, and intercept rates.
+### שלב 1 — קבצי נתונים (5 קבצים)
 
-**`src/data/arsenalData.ts`** — Detailed missile inventory for Iran/Israel/USA: type, range, propulsion, warhead weight, pre-war quantity, unit cost estimates, source classification (official vs foreign estimate).
+**`src/data/launchData.ts`** — ציר זמן יומי של שיגורים איראניים (28 בפב׳ – 9 במרץ 2026): טילים בליסטיים, כטב"מים, אירוע מקושר, אחוז יירוט, משגרים כשירים שנותרו.
 
-**`src/data/uraniumData.ts`** — Enrichment milestones: date, enrichment level, quantity (kg), IAEA status.
+**`src/data/arsenalData.ts`** — מלאי טילים מפורט לאיראן (Fateh-110, Shahab-3, Sejjil, Fattah-1, Kheibar Shekan וכו׳): טווח, הנעה, משקל ראש קרב, כמות טרום-מלחמה, עלות מוערכת, סיווג מקור.
 
-**`src/data/costData.ts`** — Attack vs defense cost comparison: Iranian missile cost vs interceptor cost (Arrow 3, SM-3, etc.), plus US munitions spending breakdown for first 100 hours.
+**`src/data/uraniumData.ts`** — אבני דרך בהעשרה: תאריך, רמת העשרה (5%/20%/60%), כמות בק"ג, סטטוס IAEA.
 
-**`src/data/targetDistribution.ts`** — Geographic distribution of Iranian fire (UAE 48%, Israel 12.8%, Kuwait, etc.).
+**`src/data/costData.ts`** — עלות תקיפה מול הגנה (עלות טיל איראני vs מיירט Arrow 3/SM-3) + פירוט הוצאות חימושים אמריקאיים ב-100 שעות ראשונות (TLAM, JASSM, SM-2/3/6).
 
-### New Components (all use `recharts`)
+**`src/data/targetDistribution.ts`** — פיזור גיאוגרפי של אש איראנית (UAE 48%, ישראל 12.8%, כווית, וכו׳).
 
-Each chart is a standalone component in `src/components/charts/`:
+### שלב 2 — קומפוננטות גרפים (10 קבצים ב-`src/components/charts/`)
 
-| # | Component | Chart Type | Data Source | Dimensions |
-|---|-----------|-----------|-------------|------------|
-| 1 | `PersonnelChart` | Horizontal Stacked Bar | `militaryData.ts` (active + reserve) | 2D |
-| 2 | `FireRateCollapseChart` | Area/Line | `launchData.ts` (ballistic only) | 2D |
-| 3 | `DualLaunchChart` | Dual-line Area | `launchData.ts` (ballistic + UAV) | 3D |
-| 4 | `CostComparisonChart` | Grouped Bar (log scale) | `costData.ts` | 3D |
-| 5 | `TargetDistributionChart` | Donut/Pie | `targetDistribution.ts` | 2D |
-| 6 | `CapabilityErosionChart` | Bubble Scatter | `launchData.ts` + TEL estimates | 4D |
-| 7 | `USMunitionsTreemap` | Treemap | `costData.ts` (US breakdown) | 3D |
-| 8 | `UraniumStatusChart` | Stacked Bar (waffle-like) | `uraniumData.ts` | 3D |
-| 9 | `MissileRangeRadar` | Radar | `arsenalData.ts` (Iran missiles) | 3D |
-| 10 | `CasualtyBreakdownChart` | Pie (exploded) | `militaryData.ts` v1 casualty data | 2D |
+כולם משתמשים ב-`recharts` (כבר מותקן) ותומכים בדו-לשוניות:
 
-### New Page Section
+1. **PersonnelChart** — Horizontal Stacked Bar ← `militaryData.ts`
+2. **FireRateCollapseChart** — Area/Line (קריסת קצב אש) ← `launchData.ts`
+3. **DualLaunchChart** — Dual Area (בליסטי + כטב"מ) ← `launchData.ts`
+4. **CostComparisonChart** — Grouped Bar, log scale ← `costData.ts`
+5. **TargetDistributionChart** — Donut ← `targetDistribution.ts`
+6. **CapabilityErosionChart** — Bubble Scatter 4D ← `launchData.ts`
+7. **USMunitionsTreemap** — Treemap ← `costData.ts`
+8. **UraniumStatusChart** — Stacked Bar ← `uraniumData.ts`
+9. **MissileRangeRadar** — Radar ← `arsenalData.ts`
+10. **CasualtyBreakdownChart** — Pie ← `militaryData.ts` v1
 
-Add a `src/components/ChartsSection.tsx` that renders all 10 charts in a vertical scroll below the existing force modules, separated by a section header. Each chart gets:
-- Bilingual title + subtitle
-- Source attribution
-- Dark card wrapper with consistent spacing
-- Tooltip on hover showing exact values
+### שלב 3 — מעטפת ואינטגרציה
 
-### Navigation Update
+**`src/components/ChartsSection.tsx`** — מרנדר את כל 10 הגרפים בגלילה אנכית, כל אחד בכרטיס כהה עם כותרת דו-לשונית, כתובית מקור, ו-tooltip.
 
-Add a sticky tab bar or anchor link in the header: "Data | Charts" to scroll between the force table and charts section.
+**`src/pages/Index.tsx`** — הוספת טאב ניווט דביק "נתונים | גרפים" בהדר, ו-`ChartsSection` מתחת למודולי הכוח הקיימים.
 
-### Translations
+**`src/contexts/LanguageContext.tsx`** — הוספת ~30 מפתחות תרגום חדשים לכותרות גרפים, תוויות צירים, tooltips וכותרות מקטעים.
 
-Add ~30 new keys to `LanguageContext.tsx` for chart titles, labels, tooltips, and section headers.
+### עקרונות עיצוב (נשמרים)
 
-### Design Constraints (preserved)
+- ערכת נושא כהה, צבעי מדינות (כחול/אפור/ירוק), אדום לאבדות
+- Heebo לכותרות, Frank Ruhl Libre לתוויות
+- ללא אייקונים פיגורטיביים, ללא גיימיפיקציה
+- RTL/LTR מלא בכל הגרפים
 
-- Dark theme throughout, matching existing palette
-- Country colors: USA blue, Israel grey, Iran green, Loss red
-- Heebo for titles, Frank Ruhl Libre for labels
-- No figurative icons, no gamification
-- All charts use `recharts` (already installed)
+### סדר ביצוע
+
+אבצע את זה ב-3 גלים: נתונים ← גרפים ← אינטגרציה. זה פרויקט גדול אבל ישים לחלוטין עם הכלים הקיימים.
 
