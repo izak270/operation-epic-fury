@@ -6,49 +6,49 @@
 
 @layer base {
   :root {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 91%;
+    --background: 220 15% 6%;
+    --foreground: 210 20% 93%;
 
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 91%;
+    --card: 220 14% 9%;
+    --card-foreground: 210 20% 93%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 91%;
+    --popover: 220 14% 9%;
+    --popover-foreground: 210 20% 93%;
 
-    --primary: 213 100% 32%;
+    --primary: 213 100% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 63%;
+    --secondary: 210 8% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 220 12% 13%;
+    --muted-foreground: 215 10% 48%;
 
-    --accent: 90 62% 20%;
+    --accent: 142 55% 35%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 40% 48%;
+    --destructive: 0 65% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 213 100% 32%;
+    --border: 220 12% 16%;
+    --input: 220 12% 16%;
+    --ring: 213 100% 42%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    --usa: 213 100% 32%;
-    --israel: 0 0% 63%;
-    --iran: 90 62% 20%;
-    --loss: 0 40% 48%;
+    --usa: 213 100% 42%;
+    --israel: 210 8% 65%;
+    --iran: 142 55% 35%;
+    --loss: 0 65% 52%;
 
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 91%;
-    --sidebar-primary: 213 100% 32%;
+    --sidebar-background: 220 15% 6%;
+    --sidebar-foreground: 210 20% 93%;
+    --sidebar-primary: 213 100% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 91%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 213 100% 32%;
+    --sidebar-accent: 220 12% 13%;
+    --sidebar-accent-foreground: 210 20% 93%;
+    --sidebar-border: 220 12% 16%;
+    --sidebar-ring: 213 100% 42%;
   }
 }
 
@@ -60,10 +60,27 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Frank Ruhl Libre', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Heebo', sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 }
 
@@ -88,6 +105,17 @@
   }
 }
 
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-flap {
   animation: flap-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   transform-origin: top center;
@@ -96,4 +124,8 @@
 
 .animate-loss-flash {
   animation: loss-flash 1.5s ease-in-out 2;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease-out forwards;
 }

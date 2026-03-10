@@ -85,18 +85,6 @@ const v0Categories: ForceCategory[] = [
 ];
 
 // v1 — Current estimates (March 2026)
-// Sources: GlobalFirepower 2026, IISS, SIPRI, IDF official data,
-// JPost, Media Line, conflict reporting
-//
-// Key events since baseline:
-// - Gaza war (Oct 2023–present): 900+ IDF soldiers KIA, ~80 Merkava tanks damaged/destroyed
-// - Lebanon invasion (Oct 2024): additional IDF losses
-// - Operation Rising Lion / Epic Fury (Feb–Mar 2026):
-//   Israel struck Iran — 80% of Iran air defense destroyed,
-//   60% of missile launchers destroyed, 3,000+ Iranian military killed
-// - Iran retaliated with ballistic missiles on Israel (limited effect, 80-90% intercepted)
-// - Israel defense budget surged to $34.6B (2026)
-// - USA defense budget adjusted to $831.5B (2026)
 const v1Categories: ForceCategory[] = [
   {
     id: "active",
@@ -201,6 +189,173 @@ const v1Categories: ForceCategory[] = [
   },
 ];
 
+// v2 — Post-ceasefire assessment (March 10, 2026)
+// Adds ammunition, air defense, UAV/drone fleet, interceptor stockpile categories
+const v2Categories: ForceCategory[] = [
+  // === FORCE STRUCTURE ===
+  {
+    id: "active",
+    labelKey: "cat.active",
+    data: { usa: 1328000, israel: 169200, iran: 604000 },
+    change: { usa: -2000, israel: -300, iran: -3000 },
+    source: "GlobalFirepower 2026 / IDF Mar 10",
+    note: { iran: "est." },
+  },
+  {
+    id: "reserve",
+    labelKey: "cat.reserve",
+    data: { usa: 800000, israel: 465000, iran: 350000 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "GlobalFirepower 2026",
+  },
+  {
+    id: "aircraft",
+    labelKey: "cat.aircraft",
+    data: { usa: 1852, israel: 235, iran: 128 },
+    change: { usa: -2, israel: -6, iran: -58 },
+    source: "GFP 2026 / CENTCOM Mar 10",
+    note: { iran: "est." },
+  },
+  {
+    id: "tanks",
+    labelKey: "cat.tanks",
+    data: { usa: 5500, israel: 1280, iran: 1940 },
+    change: { usa: 0, israel: -90, iran: -56 },
+    source: "IISS / IDF / CENTCOM",
+    note: { israel: "est.", iran: "est." },
+  },
+  {
+    id: "naval",
+    labelKey: "cat.naval",
+    data: { usa: 483, israel: 67, iran: 74 },
+    change: { usa: -1, israel: 0, iran: -27 },
+    source: "GlobalFirepower 2026 / USN",
+    note: { iran: "est." },
+  },
+  // === NEW: AMMUNITION / MUNITIONS ===
+  {
+    id: "ammunition",
+    labelKey: "cat.ammunition",
+    data: { usa: 870, israel: 48, iran: 420 },
+    change: { usa: -330, israel: -52, iran: -580 },
+    source: "CENTCOM / IDF / CSIS Mar 2026",
+    format: "number",
+    note: { usa: "TLAM+JASSM+JDAM", israel: "interceptors", iran: "ballistic+cruise" },
+  },
+  {
+    id: "interceptors",
+    labelKey: "cat.interceptors",
+    data: { usa: 1576, israel: 780, iran: "N/A" },
+    change: { usa: -156, israel: -420, iran: 0 },
+    source: "MDA / Rafael / IAI Mar 2026",
+    note: { usa: "SM-2/3/6+PAC-3", israel: "ID+DS+Arrow" },
+  },
+  // === NEW: AIR DEFENSE SYSTEMS ===
+  {
+    id: "air_defense",
+    labelKey: "cat.air_defense",
+    data: { usa: 60, israel: 15, iran: 8 },
+    change: { usa: 0, israel: 0, iran: -37 },
+    source: "IISS / CSIS satellite Mar 2026",
+    note: { iran: "80% destroyed" },
+  },
+  // === NEW: UAV / DRONE FLEET ===
+  {
+    id: "uav_fleet",
+    labelKey: "cat.uav_fleet",
+    data: { usa: 957, israel: 480, iran: 1200 },
+    change: { usa: 0, israel: -20, iran: -3850 },
+    source: "GFP 2026 / CENTCOM / est.",
+    note: { iran: "est. remaining" },
+  },
+  // === MISSILES ===
+  {
+    id: "missiles",
+    labelKey: "cat.missiles",
+    data: { usa: 1200, israel: 340, iran: 800 },
+    change: { usa: 0, israel: -60, iran: -2200 },
+    source: "CSIS / IDF / CENTCOM Mar 10",
+    note: { israel: "est.", iran: "est." },
+  },
+  // === TEL LAUNCHERS ===
+  {
+    id: "tel_launchers",
+    labelKey: "cat.tel_launchers",
+    data: { usa: "N/A", israel: "N/A", iran: 120 },
+    change: { usa: 0, israel: 0, iran: -180 },
+    source: "CENTCOM / CSIS satellite Mar 10",
+    note: { iran: "60% destroyed" },
+  },
+  // === BUDGET ===
+  {
+    id: "budget",
+    labelKey: "cat.budget",
+    data: { usa: 831500000000, israel: 37200000000, iran: 10000000000 },
+    change: { usa: -54500000000, israel: 13800000000, iran: 0 },
+    source: "SIPRI / Knesset / MoD Mar 2026",
+    format: "currency",
+    note: { israel: "wartime supplement" },
+  },
+  // === NUCLEAR ===
+  {
+    id: "nuclear",
+    labelKey: "cat.nuclear",
+    data: { usa: 5500, israel: 90, iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "FAS / SIPRI 2026",
+    note: { israel: "est.", iran: "128kg 60% HEU" },
+  },
+  // === MUNITIONS COST ===
+  {
+    id: "munitions_cost",
+    labelKey: "cat.munitions_cost",
+    data: { usa: 1665000000, israel: 2100000000, iran: 4500000000 },
+    change: { usa: -1665000000, israel: -2100000000, iran: -4500000000 },
+    source: "CENTCOM / IDF / CSIS est.",
+    format: "currency",
+    note: { usa: "100 hrs", israel: "10 days", iran: "10 days" },
+  },
+  // === CASUALTIES ===
+  {
+    id: "mil_kia",
+    labelKey: "cat.mil_kia",
+    data: { usa: 12, israel: 935, iran: 4200 },
+    change: { usa: -12, israel: -935, iran: -4200 },
+    source: "CENTCOM / IDF / est. Mar 10",
+    note: { usa: "in theater", israel: "since Oct 2023", iran: "est." },
+  },
+  {
+    id: "civ_killed",
+    labelKey: "cat.civ_killed",
+    data: { usa: 0, israel: 1145, iran: 2100 },
+    change: { usa: 0, israel: -1145, iran: -2100 },
+    source: "MoH / Reuters / Al Jazeera Mar 10",
+    note: { israel: "inc. Oct 7", iran: "Iran claim" },
+  },
+  {
+    id: "civ_killed_other",
+    labelKey: "cat.civ_killed_other",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Gaza MoH / Lebanon MoH / Lancet",
+    note: { usa: "N/A", israel: "N/A", iran: "N/A" },
+  },
+  {
+    id: "gaza_killed",
+    labelKey: "cat.gaza_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Gaza MoH / Lancet Mar 2026",
+  },
+  {
+    id: "lebanon_killed",
+    labelKey: "cat.lebanon_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Lebanon MoH Nov 2024",
+  },
+];
+
 export const dataVersions: DataVersion[] = [
   {
     id: "v0",
@@ -214,7 +369,13 @@ export const dataVersions: DataVersion[] = [
     date: "2026-03",
     categories: v1Categories,
   },
+  {
+    id: "v2",
+    labelKey: "version.v2",
+    date: "2026-03-10",
+    categories: v2Categories,
+  },
 ];
 
 // Default export for backward compat
-export const militaryData = v1Categories;
+export const militaryData = v2Categories;

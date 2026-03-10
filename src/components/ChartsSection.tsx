@@ -85,25 +85,37 @@ const ChartsSection: React.FC = () => {
   ];
 
   return (
-    <section id="charts-section" className="px-4 sm:px-8 py-8 space-y-6">
-      <div className="border-b border-border pb-3 mb-4">
-        <h2 className="font-heebo font-black text-lg sm:text-xl">
-          {t("charts.section.title")}
-        </h2>
-        <p className="text-xs text-muted-foreground font-frank mt-1">
+    <section id="charts-section" className="px-4 sm:px-8 py-8 space-y-5">
+      <div className="pb-3 mb-2">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-1 h-5 rounded-full bg-primary" />
+          <h2 className="font-heebo font-black text-lg sm:text-xl">
+            {t("charts.section.title")}
+          </h2>
+        </div>
+        <p className="text-xs text-muted-foreground font-frank mt-1 ltr:ml-3 rtl:mr-3">
           {t("charts.section.subtitle")}
         </p>
       </div>
 
       {charts.map((chart, i) => (
-        <div key={i} className="bg-card border border-border rounded-lg p-4 sm:p-6">
-          <div className="mb-4">
-            <h3 className="font-heebo font-bold text-sm sm:text-base text-foreground">
-              {t(chart.titleKey)}
-            </h3>
-            <p className="text-[11px] text-muted-foreground font-frank mt-0.5">
-              {t(chart.subtitleKey)}
-            </p>
+        <div
+          key={i}
+          className="bg-card border border-border rounded-xl p-4 sm:p-6 transition-colors hover:border-primary/20"
+          style={{ animationDelay: `${i * 50}ms` }}
+        >
+          <div className="mb-4 flex items-start justify-between">
+            <div>
+              <h3 className="font-heebo font-bold text-sm sm:text-base text-foreground">
+                {t(chart.titleKey)}
+              </h3>
+              <p className="text-[11px] text-muted-foreground font-frank mt-0.5">
+                {t(chart.subtitleKey)}
+              </p>
+            </div>
+            <span className="text-[9px] font-heebo font-bold uppercase tracking-widest text-muted-foreground bg-muted px-2 py-0.5 rounded-full flex-shrink-0">
+              #{String(i + 1).padStart(2, "0")}
+            </span>
           </div>
           {chart.component}
           <p className="text-[10px] text-muted-foreground font-frank mt-3 pt-2 border-t border-border">
