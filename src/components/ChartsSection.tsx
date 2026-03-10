@@ -72,6 +72,12 @@ const ChartsSection: React.FC = () => {
       component: <UraniumStatusChart />,
     },
     {
+      titleKey: "chart.missileMap.title",
+      subtitleKey: "chart.missileMap.subtitle",
+      sourceKey: "chart.missileMap.source",
+      component: <MissileRangeMap />,
+    },
+    {
       titleKey: "chart.missileRadar.title",
       subtitleKey: "chart.missileRadar.subtitle",
       sourceKey: "chart.missileRadar.source",
