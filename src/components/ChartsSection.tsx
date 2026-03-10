@@ -1,6 +1,6 @@
 import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import PersonnelChart from "@/components/charts/PersonnelChart";
+
 import FireRateCollapseChart from "@/components/charts/FireRateCollapseChart";
 import DualLaunchChart from "@/components/charts/DualLaunchChart";
 import CostComparisonChart from "@/components/charts/CostComparisonChart";
