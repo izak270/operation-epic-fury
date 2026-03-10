@@ -1,1 +1,4 @@
 project_id = "imbigykjgswlakeaytrz"
+
+[functions.research-data]
+verify_jwt = false
