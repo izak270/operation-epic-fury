@@ -135,24 +135,36 @@ const MissileRangeRadar: React.FC = () => {
       </div>
 
       {/* Total summary */}
-      <div className="flex flex-wrap items-center gap-4 px-3 py-2 bg-muted/20 rounded-lg border border-border/50">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-3 py-3 bg-muted/20 rounded-lg border border-border/50">
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-foreground text-sm">
             {iranMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0).toLocaleString()}
           </span>
-          {" "}{lang === "he" ? "סה\"כ טילים טרום מלחמה" : "total pre-war missiles"}
+          <div>{lang === "he" ? "טרום מלחמה" : "pre-war total"}</div>
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-loss text-sm">
+            {Object.values(productionEstimates).reduce((s, p) => s + p.currentQty, 0).toLocaleString()}
+          </span>
+          <div>{lang === "he" ? "כמות היום (הערכה)" : "current est. total"}</div>
         </div>
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-foreground text-sm">
             {formatUSD(iranMissiles.reduce((s, m) => s + (m.preWarQty || 0) * (m.unitCostUSD || 0), 0))}
           </span>
-          {" "}{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}
+          <div>{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}</div>
         </div>
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-primary text-sm">
             ~{Object.values(productionEstimates).reduce((s, p) => s + p.ratePerYear, 0)}
           </span>
-          {" "}{lang === "he" ? "ייצור שנתי מוערך" : "est. annual production"}
+          <div>{lang === "he" ? "ייצור שנתי (טרום)" : "annual prod. (pre-war)"}</div>
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-loss text-sm">
+            ~{Object.values(productionEstimates).reduce((s, p) => s + p.currentRatePerYear, 0)}
+          </span>
+          <div>{lang === "he" ? "ייצור שנתי (היום)" : "annual prod. (current)"}</div>
         </div>
       </div>
 
