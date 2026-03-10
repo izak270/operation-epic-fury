@@ -23,15 +23,20 @@ const translations: Record<string, Record<Language, string>> = {
   "cat.missiles": { en: "Missile Systems", he: "מערכות טילים" },
   "cat.budget": { en: "Defense Budget (USD)", he: "תקציב ביטחון (דולר)" },
   "cat.nuclear": { en: "Nuclear Warheads", he: "ראשי נפץ גרעיניים" },
+  "cat.casualties": { en: "Military Casualties (KIA)", he: "הרוגים צבאיים" },
   "label.source": { en: "Source", he: "מקור" },
   "label.change": { en: "Change", he: "שינוי" },
   "label.na": { en: "N/A", he: "לא רלוונטי" },
   "label.est": { en: "est.", he: "הערכה" },
   "lang.toggle": { en: "עברית", he: "English" },
+  "version.v0": { en: "v0 — Baseline 2024", he: "v0 — בסיס 2024" },
+  "version.v1": { en: "v1 — March 2026", he: "v1 — מרץ 2026" },
+  "version.label": { en: "Version", he: "גרסה" },
   "footer.disclaimer": { 
-    en: "Data based on publicly available estimates. Sources: GlobalFirepower 2024, IISS, SIPRI.", 
-    he: "הנתונים מבוססים על הערכות פומביות. מקורות: GlobalFirepower 2024, IISS, SIPRI." 
+    en: "Data based on publicly available estimates. Sources: GlobalFirepower 2026, IISS, SIPRI, IDF official data, JPost.", 
+    he: "הנתונים מבוססים על הערכות פומביות. מקורות: GlobalFirepower 2026, IISS, SIPRI, נתוני צה״ל, JPost." 
   },
+  "note.since_oct_2023": { en: "since Oct 2023", he: "מאז אוקטובר 2023" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
