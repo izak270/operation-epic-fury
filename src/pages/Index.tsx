@@ -135,9 +135,9 @@ const Index = () => {
               <span className="text-xs font-heebo font-bold text-muted-foreground">
                 Force Posture
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground font-heebo">
+              <a href="https://github.com/izak270/operation-epic-fury/" target="_blank" rel="noopener noreferrer" className="text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground font-heebo hover:bg-accent/30 transition-colors">
                 {t("label.free")}
-              </span>
+              </a>
             </div>
             <p className="text-[10px] text-muted-foreground font-frank text-center sm:text-right max-w-md">
               {t("footer.disclaimer")}
