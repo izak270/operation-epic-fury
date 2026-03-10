@@ -194,6 +194,35 @@ const translations: Record<string, Record<Language, string>> = {
   "chart.casualty.subtitle": { en: "Breakdown of Iranian fatalities from coalition strikes", he: "פילוח הרוגים איראנים מתקיפות הקואליציה" },
   "chart.casualty.source": { en: "MoH / Reuters / Al Jazeera Mar 2026", he: "משרד הבריאות / רויטרס / אל-ג'זירה מרץ 2026" },
 
+  // Forecast section
+  "forecast.section.title": { en: "Intelligence Forecast", he: "תחזית מודיעינית" },
+  "forecast.section.subtitle": { en: "Projected fire rate, strategy shift, and capability erosion — Days 11-30", he: "תחזית קצב אש, שינוי אסטרטגי ושחיקת יכולות — ימים 11-30" },
+  "forecast.summary.fireRate": {
+    en: "Iranian ballistic fire rate collapsed ~92% from peak (520→40/day). Forecast: continued decline to single digits by Day 25.",
+    he: "קצב האש הבליסטי האיראני צנח ~92% מהשיא (520→40 ליום). תחזית: ירידה מתמשכת לספרה בודדת ביום 25."
+  },
+  "forecast.summary.tels": {
+    en: "TEL launchers reduced from 300 to ~120. Production bottleneck: only 5-8 new TELs/month vs 180+ destroyed. This is the critical constraint.",
+    he: "משגרים (TEL) צומצמו מ-300 ל-~120. צוואר בקבוק ייצור: 5-8 משגרים חדשים/חודש מול 180+ שהושמדו. זהו האילוץ הקריטי."
+  },
+  "forecast.summary.strategy": {
+    en: "Iran shifting to 'missile math' attrition: cheap UAV swarms to exhaust Gulf defenses + small calculated BM salvos to drain Israel's expensive Arrow interceptors.",
+    he: "איראן עוברת לאסטרטגיית התשה ('מתמטיקת טילים'): נחילי כטב\"מים זולים לשחיקת הגנות המפרץ + מטחים בליסטיים קטנים ומחושבים לדלדול מיירטי חץ היקרים של ישראל."
+  },
+  "forecast.summary.conclusion": {
+    en: "⚡ Bottom line: Israel will face tens of BMs/day at most — the goal is no longer mass destruction but economic attrition of air defense stocks.",
+    he: "⚡ שורה תחתונה: ישראל תתמודד עם עשרות בודדות של טילים ביום לכל היותר — המטרה כבר לא הרס מסיבי אלא שחיקת כלכלת חימושי ההגנה האווירית."
+  },
+  "forecast.chart.fireRate.title": { en: "Ballistic Fire Rate — Actual + Forecast", he: "קצב אש בליסטי — נתון + תחזית" },
+  "forecast.chart.fireRate.subtitle": { en: "Daily BM launches: actual (Days 1-10) + projected decline (Days 11-30)", he: "שיגורי טילים בליסטיים: נתון (ימים 1-10) + ירידה חזויה (ימים 11-30)" },
+  "forecast.chart.fireRate.source": { en: "CENTCOM / IDF / AIO forecast model", he: "CENTCOM / צה\"ל / מודל תחזית AIO" },
+  "forecast.chart.shift.title": { en: "BM → UAV Strategy Shift", he: "מעבר אסטרטגי: טילים → כטב\"מים" },
+  "forecast.chart.shift.subtitle": { en: "Iran's shift from ballistic missiles to cheap UAV swarms", he: "המעבר האיראני מטילים בליסטיים לנחילי כטב\"מים זולים" },
+  "forecast.chart.shift.source": { en: "CENTCOM / AIO analysis", he: "CENTCOM / ניתוח AIO" },
+  "forecast.chart.erosion.title": { en: "TEL Erosion + Intercept Rate", he: "שחיקת משגרים + אחוז יירוט" },
+  "forecast.chart.erosion.subtitle": { en: "Remaining launchers vs rising intercept effectiveness", he: "משגרים שנותרו מול עליית יעילות היירוט" },
+  "forecast.chart.erosion.source": { en: "CENTCOM / IDF / CSIS / AIO forecast", he: "CENTCOM / צה\"ל / CSIS / תחזית AIO" },
+
   // Missile table headers
   "missile.name": { en: "Missile", he: "טיל" },
   "missile.type": { en: "Type", he: "סוג" },
