@@ -1,59 +1,137 @@
 import React from "react";
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getIranMissiles } from "@/data/arsenalData";
 
+// Production estimates (units/year) — sourced from CSIS, IISS
+const productionEstimates: Record<string, { ratePerYear: number; noteEn: string; noteHe: string }> = {
+  "fateh-110": { ratePerYear: 100, noteEn: "Mature production line", noteHe: "קו ייצור בוגר" },
+  "zolfaghar": { ratePerYear: 60, noteEn: "Active production", noteHe: "ייצור פעיל" },
+  "shahab-3": { ratePerYear: 30, noteEn: "Slowed — shifting to solid-fuel", noteHe: "מואט — מעבר לדלק מוצק" },
+  "haj-qassem": { ratePerYear: 40, noteEn: "Priority production line", noteHe: "קו ייצור בעדיפות" },
+  "fattah-1": { ratePerYear: 15, noteEn: "New — limited production", noteHe: "חדש — ייצור מוגבל" },
+  "kheibar-shekan": { ratePerYear: 50, noteEn: "High priority", noteHe: "עדיפות גבוהה" },
+  "sejjil": { ratePerYear: 20, noteEn: "Complex — dual-stage solid", noteHe: "מורכב — דו-שלבי מוצק" },
+  "khorramshahr": { ratePerYear: 10, noteEn: "Limited — liquid fuel", noteHe: "מוגבל — דלק נוזלי" },
+};
+
+const propulsionLabels: Record<string, Record<string, string>> = {
+  solid: { en: "Solid", he: "מוצק" },
+  liquid: { en: "Liquid", he: "נוזלי" },
+  "dual-stage-solid": { en: "Dual-stage solid", he: "דו-שלבי מוצק" },
+  turbojet: { en: "Turbojet", he: "טורבוסילון" },
+};
+
 const MissileRangeRadar: React.FC = () => {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const iranMissiles = getIranMissiles();
 
-  const data = iranMissiles.map(m => ({
-    name: lang === "he" ? m.nameHe : m.nameEn,
-    range: m.rangeKm,
-    warhead: m.warheadKg || 0,
-    fullName: lang === "he" ? m.nameHe : m.nameEn,
-  }));
+  const formatUSD = (val: number) => {
+    if (val >= 1_000_000) return `$${(val / 1_000_000).toFixed(1)}M`;
+    if (val >= 1_000) return `$${(val / 1_000).toFixed(0)}K`;
+    return `$${val}`;
+  };
 
   return (
-    <div className="w-full h-[360px]" dir="ltr">
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
-          <PolarGrid stroke="hsl(0,0%,18%)" />
-          <PolarAngleAxis
-            dataKey="name"
-            stroke="hsl(0,0%,55%)"
-            fontSize={10}
-            tick={{ fill: "hsl(0,0%,70%)" }}
-          />
-          <PolarRadiusAxis
-            angle={90}
-            domain={[0, 2600]}
-            stroke="hsl(0,0%,30%)"
-            fontSize={9}
-            tick={{ fill: "hsl(0,0%,45%)" }}
-          />
-          <Radar
-            name={lang === "he" ? "טווח (ק\"מ)" : "Range (km)"}
-            dataKey="range"
-            stroke="hsl(90, 62%, 35%)"
-            fill="hsl(90, 62%, 20%)"
-            fillOpacity={0.4}
-            strokeWidth={2}
-          />
-          <Radar
-            name={lang === "he" ? "ראש קרב (ק\"ג)" : "Warhead (kg)"}
-            dataKey="warhead"
-            stroke="hsl(0, 40%, 48%)"
-            fill="hsl(0, 40%, 48%)"
-            fillOpacity={0.15}
-            strokeWidth={1.5}
-          />
-          <Tooltip
-            contentStyle={{ background: "hsl(0,0%,10%)", border: "1px solid hsl(0,0%,18%)", borderRadius: 6, fontSize: 12 }}
-            labelStyle={{ color: "hsl(0,0%,91%)" }}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
+    <div className="w-full space-y-3" dir={lang === "he" ? "rtl" : "ltr"}>
+      {/* Table */}
+      <div className="overflow-x-auto rounded-lg border border-border">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="bg-muted/50 border-b border-border">
+              <th className="text-start font-heebo font-bold px-3 py-2.5 text-foreground">{t("missile.name")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.type")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.range")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.warhead")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.qty")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.cost")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden sm:table-cell">{t("missile.propulsion")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden md:table-cell">{t("missile.production")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {iranMissiles.map((m, i) => {
+              const prod = productionEstimates[m.id];
+              return (
+                <tr key={m.id} className={`border-b border-border/50 transition-colors hover:bg-muted/20 ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
+                  <td className="px-3 py-2.5">
+                    <div className="font-heebo font-bold text-foreground text-sm">
+                      {lang === "he" ? m.nameHe : m.nameEn}
+                    </div>
+                    {m.noteEn && (
+                      <div className="text-[10px] text-muted-foreground font-frank mt-0.5 leading-tight">
+                        {lang === "he" ? m.noteHe : m.noteEn}
+                      </div>
+                    )}
+                  </td>
+                  <td className="text-center px-2 py-2.5">
+                    <span className="px-1.5 py-0.5 rounded bg-iran/10 text-iran font-heebo font-bold text-[10px]">
+                      {m.category}
+                    </span>
+                  </td>
+                  <td className="text-center px-2 py-2.5 font-frank tabular-nums text-foreground">
+                    {m.rangeKm.toLocaleString()} {lang === "he" ? "ק\"מ" : "km"}
+                  </td>
+                  <td className="text-center px-2 py-2.5 font-frank tabular-nums text-foreground">
+                    {m.warheadKg ? `${m.warheadKg} ${lang === "he" ? "ק\"ג" : "kg"}` : "—"}
+                  </td>
+                  <td className="text-center px-2 py-2.5">
+                    <span className="font-heebo font-bold text-foreground text-sm">
+                      {m.preWarQty ? m.preWarQty.toLocaleString() : "—"}
+                    </span>
+                  </td>
+                  <td className="text-center px-2 py-2.5 font-frank tabular-nums text-foreground">
+                    {m.unitCostUSD ? formatUSD(m.unitCostUSD) : "—"}
+                  </td>
+                  <td className="text-center px-2 py-2.5 font-frank text-muted-foreground hidden sm:table-cell">
+                    {propulsionLabels[m.propulsion]?.[lang] || m.propulsion}
+                  </td>
+                  <td className="text-center px-2 py-2.5 hidden md:table-cell">
+                    {prod ? (
+                      <div>
+                        <span className="font-heebo font-bold text-primary text-sm">{prod.ratePerYear}</span>
+                        <span className="text-muted-foreground font-frank text-[10px]"> /{lang === "he" ? "שנה" : "yr"}</span>
+                        <div className="text-[9px] text-muted-foreground font-frank mt-0.5">
+                          {lang === "he" ? prod.noteHe : prod.noteEn}
+                        </div>
+                      </div>
+                    ) : "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Total summary */}
+      <div className="flex flex-wrap items-center gap-4 px-3 py-2 bg-muted/20 rounded-lg border border-border/50">
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-foreground text-sm">
+            {iranMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0).toLocaleString()}
+          </span>
+          {" "}{lang === "he" ? "סה\"כ טילים טרום מלחמה" : "total pre-war missiles"}
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-foreground text-sm">
+            {formatUSD(iranMissiles.reduce((s, m) => s + (m.preWarQty || 0) * (m.unitCostUSD || 0), 0))}
+          </span>
+          {" "}{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-primary text-sm">
+            ~{Object.values(productionEstimates).reduce((s, p) => s + p.ratePerYear, 0)}
+          </span>
+          {" "}{lang === "he" ? "ייצור שנתי מוערך" : "est. annual production"}
+        </div>
+      </div>
+
+      {/* Source note */}
+      <p className="text-[9px] text-muted-foreground font-frank px-1">
+        {lang === "he" 
+          ? "* נתוני ייצור מבוססים על הערכות CSIS ו-IISS. כמויות בפועל עשויות להיות שונות."
+          : "* Production data based on CSIS and IISS estimates. Actual quantities may differ."
+        }
+      </p>
     </div>
   );
 };
