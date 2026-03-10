@@ -3,15 +3,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { getIranMissiles } from "@/data/arsenalData";
 
 // Production estimates (units/year) — sourced from CSIS, IISS
-const productionEstimates: Record<string, { ratePerYear: number; noteEn: string; noteHe: string }> = {
-  "fateh-110": { ratePerYear: 100, noteEn: "Mature production line", noteHe: "קו ייצור בוגר" },
-  "zolfaghar": { ratePerYear: 60, noteEn: "Active production", noteHe: "ייצור פעיל" },
-  "shahab-3": { ratePerYear: 30, noteEn: "Slowed — shifting to solid-fuel", noteHe: "מואט — מעבר לדלק מוצק" },
-  "haj-qassem": { ratePerYear: 40, noteEn: "Priority production line", noteHe: "קו ייצור בעדיפות" },
-  "fattah-1": { ratePerYear: 15, noteEn: "New — limited production", noteHe: "חדש — ייצור מוגבל" },
-  "kheibar-shekan": { ratePerYear: 50, noteEn: "High priority", noteHe: "עדיפות גבוהה" },
-  "sejjil": { ratePerYear: 20, noteEn: "Complex — dual-stage solid", noteHe: "מורכב — דו-שלבי מוצק" },
-  "khorramshahr": { ratePerYear: 10, noteEn: "Limited — liquid fuel", noteHe: "מוגבל — דלק נוזלי" },
+const productionEstimates: Record<string, { 
+  ratePerYear: number; 
+  currentRatePerYear: number;
+  currentQty: number;
+  noteEn: string; noteHe: string;
+  currentNoteEn: string; currentNoteHe: string;
+}> = {
+  "fateh-110": { ratePerYear: 100, currentRatePerYear: 40, currentQty: 180, noteEn: "Mature production line", noteHe: "קו ייצור בוגר", currentNoteEn: "Facilities hit — reduced capacity", currentNoteHe: "מתקנים נפגעו — קיבולת מופחתת" },
+  "zolfaghar": { ratePerYear: 60, currentRatePerYear: 25, currentQty: 120, noteEn: "Active production", noteHe: "ייצור פעיל", currentNoteEn: "Supply chain disrupted", currentNoteHe: "שרשרת אספקה שובשה" },
+  "shahab-3": { ratePerYear: 30, currentRatePerYear: 10, currentQty: 200, noteEn: "Slowed — shifting to solid-fuel", noteHe: "מואט — מעבר לדלק מוצק", currentNoteEn: "Low priority — aging system", currentNoteHe: "עדיפות נמוכה — מערכת מתיישנת" },
+  "haj-qassem": { ratePerYear: 40, currentRatePerYear: 20, currentQty: 90, noteEn: "Priority production line", noteHe: "קו ייצור בעדיפות", currentNoteEn: "Partial damage to line", currentNoteHe: "נזק חלקי לקו הייצור" },
+  "fattah-1": { ratePerYear: 15, currentRatePerYear: 8, currentQty: 50, noteEn: "New — limited production", noteHe: "חדש — ייצור מוגבל", currentNoteEn: "Still ramping up", currentNoteHe: "עדיין בהרצה" },
+  "kheibar-shekan": { ratePerYear: 50, currentRatePerYear: 20, currentQty: 100, noteEn: "High priority", noteHe: "עדיפות גבוהה", currentNoteEn: "Key facilities targeted", currentNoteHe: "מתקני מפתח הותקפו" },
+  "sejjil": { ratePerYear: 20, currentRatePerYear: 5, currentQty: 60, noteEn: "Complex — dual-stage solid", noteHe: "מורכב — דו-שלבי מוצק", currentNoteEn: "Severely degraded", currentNoteHe: "נפגע קשות" },
+  "khorramshahr": { ratePerYear: 10, currentRatePerYear: 3, currentQty: 40, noteEn: "Limited — liquid fuel", noteHe: "מוגבל — דלק נוזלי", currentNoteEn: "Near halt", currentNoteHe: "כמעט עצירה" },
 };
 
 const propulsionLabels: Record<string, Record<string, string>> = {
@@ -43,9 +49,11 @@ const MissileRangeRadar: React.FC = () => {
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.range")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.warhead")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.qty")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground bg-loss/5">{lang === "he" ? "כמות היום" : "Current Qty"}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.cost")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden sm:table-cell">{t("missile.propulsion")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden md:table-cell">{t("missile.production")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden md:table-cell bg-loss/5">{lang === "he" ? "ייצור היום" : "Current Prod."}</th>
             </tr>
           </thead>
           <tbody>
@@ -79,6 +87,18 @@ const MissileRangeRadar: React.FC = () => {
                       {m.preWarQty ? m.preWarQty.toLocaleString() : "—"}
                     </span>
                   </td>
+                  <td className="text-center px-2 py-2.5 bg-loss/5">
+                    {prod ? (
+                      <div>
+                        <span className="font-heebo font-bold text-loss text-sm">{prod.currentQty.toLocaleString()}</span>
+                        {m.preWarQty && (
+                          <div className="text-[9px] text-loss/70 font-heebo font-semibold mt-0.5">
+                            {Math.round(((prod.currentQty - m.preWarQty) / m.preWarQty) * 100)}%
+                          </div>
+                        )}
+                      </div>
+                    ) : "—"}
+                  </td>
                   <td className="text-center px-2 py-2.5 font-frank tabular-nums text-foreground">
                     {m.unitCostUSD ? formatUSD(m.unitCostUSD) : "—"}
                   </td>
@@ -96,6 +116,17 @@ const MissileRangeRadar: React.FC = () => {
                       </div>
                     ) : "—"}
                   </td>
+                  <td className="text-center px-2 py-2.5 hidden md:table-cell bg-loss/5">
+                    {prod ? (
+                      <div>
+                        <span className="font-heebo font-bold text-loss text-sm">{prod.currentRatePerYear}</span>
+                        <span className="text-muted-foreground font-frank text-[10px]"> /{lang === "he" ? "שנה" : "yr"}</span>
+                        <div className="text-[9px] text-loss/70 font-heebo font-semibold mt-0.5">
+                          {Math.round(((prod.currentRatePerYear - prod.ratePerYear) / prod.ratePerYear) * 100)}%
+                        </div>
+                      </div>
+                    ) : "—"}
+                  </td>
                 </tr>
               );
             })}
@@ -104,24 +135,36 @@ const MissileRangeRadar: React.FC = () => {
       </div>
 
       {/* Total summary */}
-      <div className="flex flex-wrap items-center gap-4 px-3 py-2 bg-muted/20 rounded-lg border border-border/50">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-3 py-3 bg-muted/20 rounded-lg border border-border/50">
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-foreground text-sm">
             {iranMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0).toLocaleString()}
           </span>
-          {" "}{lang === "he" ? "סה\"כ טילים טרום מלחמה" : "total pre-war missiles"}
+          <div>{lang === "he" ? "טרום מלחמה" : "pre-war total"}</div>
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-loss text-sm">
+            {Object.values(productionEstimates).reduce((s, p) => s + p.currentQty, 0).toLocaleString()}
+          </span>
+          <div>{lang === "he" ? "כמות היום (הערכה)" : "current est. total"}</div>
         </div>
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-foreground text-sm">
             {formatUSD(iranMissiles.reduce((s, m) => s + (m.preWarQty || 0) * (m.unitCostUSD || 0), 0))}
           </span>
-          {" "}{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}
+          <div>{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}</div>
         </div>
         <div className="text-xs font-frank text-muted-foreground">
           <span className="font-heebo font-bold text-primary text-sm">
             ~{Object.values(productionEstimates).reduce((s, p) => s + p.ratePerYear, 0)}
           </span>
-          {" "}{lang === "he" ? "ייצור שנתי מוערך" : "est. annual production"}
+          <div>{lang === "he" ? "ייצור שנתי (טרום)" : "annual prod. (pre-war)"}</div>
+        </div>
+        <div className="text-xs font-frank text-muted-foreground">
+          <span className="font-heebo font-bold text-loss text-sm">
+            ~{Object.values(productionEstimates).reduce((s, p) => s + p.currentRatePerYear, 0)}
+          </span>
+          <div>{lang === "he" ? "ייצור שנתי (היום)" : "annual prod. (current)"}</div>
         </div>
       </div>
 
