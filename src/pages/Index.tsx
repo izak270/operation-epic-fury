@@ -74,26 +74,19 @@ const Index = () => {
 
           {/* Tab nav */}
           <div className="flex rounded-lg border border-border overflow-hidden">
-            <button
-              onClick={() => setActiveTab("data")}
-              className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
-                activeTab === "data"
-                  ? "bg-foreground text-background"
-                  : "hover:bg-muted text-muted-foreground"
-              }`}
-            >
-              {t("nav.data")}
-            </button>
-            <button
-              onClick={() => setActiveTab("charts")}
-              className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
-                activeTab === "charts"
-                  ? "bg-foreground text-background"
-                  : "hover:bg-muted text-muted-foreground"
-              }`}
-            >
-              {t("nav.charts")}
-            </button>
+            {(["data", "charts", "map"] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
+                  activeTab === tab
+                    ? "bg-foreground text-background"
+                    : "hover:bg-muted text-muted-foreground"
+                }`}
+              >
+                {t(`nav.${tab}`)}
+              </button>
+            ))}
           </div>
         </div>
       </header>
