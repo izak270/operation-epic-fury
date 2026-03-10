@@ -24,12 +24,6 @@ const ChartsSection: React.FC = () => {
 
   const charts: ChartCard[] = [
     {
-      titleKey: "chart.personnel.title",
-      subtitleKey: "chart.personnel.subtitle",
-      sourceKey: "chart.personnel.source",
-      component: <PersonnelChart />,
-    },
-    {
       titleKey: "chart.fireRate.title",
       subtitleKey: "chart.fireRate.subtitle",
       sourceKey: "chart.fireRate.source",
