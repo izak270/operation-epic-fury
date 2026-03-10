@@ -93,7 +93,7 @@ const ChartsSection: React.FC = () => {
       titleKey: "chart.missileRadar.title",
       subtitleKey: "chart.missileRadar.subtitle",
       sourceKey: "chart.missileRadar.source",
-      component: <MissileRangeRadar />,
+      component: <MissileRangeRadar highlightId={highlightedMissileId} />,
     },
     {
       titleKey: "chart.casualty.title",
