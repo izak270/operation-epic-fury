@@ -23,7 +23,11 @@ const translations: Record<string, Record<Language, string>> = {
   "cat.missiles": { en: "Missile Systems", he: "מערכות טילים" },
   "cat.budget": { en: "Defense Budget (USD)", he: "תקציב ביטחון (דולר)" },
   "cat.nuclear": { en: "Nuclear Warheads", he: "ראשי נפץ גרעיניים" },
-  "cat.casualties": { en: "Military Casualties (KIA)", he: "הרוגים צבאיים" },
+  "cat.mil_kia": { en: "Security Forces Killed (KIA)", he: "הרוגי כוחות ביטחון" },
+  "cat.civ_killed": { en: "Civilians Killed (Own)", he: "אזרחים שנהרגו (מדינה)" },
+  "cat.civ_killed_other": { en: "Conflict Civilian Toll", he: "אזרחים שנהרגו בסכסוך" },
+  "cat.gaza_killed": { en: "Gaza — 72,000+ killed", he: "עזה — 72,000+ הרוגים" },
+  "cat.lebanon_killed": { en: "Lebanon — 3,000+ killed", he: "לבנון — 3,000+ הרוגים" },
   "label.source": { en: "Source", he: "מקור" },
   "label.change": { en: "Change", he: "שינוי" },
   "label.na": { en: "N/A", he: "לא רלוונטי" },
@@ -37,6 +41,8 @@ const translations: Record<string, Record<Language, string>> = {
     he: "הנתונים מבוססים על הערכות פומביות. מקורות: GlobalFirepower 2026, IISS, SIPRI, נתוני צה״ל, JPost." 
   },
   "note.since_oct_2023": { en: "since Oct 2023", he: "מאז אוקטובר 2023" },
+  "note.inc_oct7": { en: "inc. Oct 7", he: "כולל 7 באוקטובר" },
+  "note.iran_claim": { en: "Iran claim", he: "לפי איראן" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
