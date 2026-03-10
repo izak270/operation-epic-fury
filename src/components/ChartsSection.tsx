@@ -1,6 +1,6 @@
 import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import PersonnelChart from "@/components/charts/PersonnelChart";
+
 import FireRateCollapseChart from "@/components/charts/FireRateCollapseChart";
 import DualLaunchChart from "@/components/charts/DualLaunchChart";
 import CostComparisonChart from "@/components/charts/CostComparisonChart";
@@ -23,12 +23,6 @@ const ChartsSection: React.FC = () => {
   const { t } = useLanguage();
 
   const charts: ChartCard[] = [
-    {
-      titleKey: "chart.personnel.title",
-      subtitleKey: "chart.personnel.subtitle",
-      sourceKey: "chart.personnel.source",
-      component: <PersonnelChart />,
-    },
     {
       titleKey: "chart.fireRate.title",
       subtitleKey: "chart.fireRate.subtitle",
