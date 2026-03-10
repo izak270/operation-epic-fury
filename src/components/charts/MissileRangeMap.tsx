@@ -213,6 +213,10 @@ const MissileRangeMap: React.FC = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [animated, setAnimated] = useState(false);
   const [showBases, setShowBases] = useState(true);
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+  const [hoveredBase, setHoveredBase] = useState<string | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const svgRef = React.useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 300);
@@ -222,9 +226,16 @@ const MissileRangeMap: React.FC = () => {
   const [launchX, launchY] = project(LAUNCH_LON, LAUNCH_LAT);
   const [targetX, targetY] = project(TARGET_LON, TARGET_LAT);
   const kmPerPixel = (MAP.lonMax - MAP.lonMin) * 85 / MAP.width;
-
   const sorted = [...iranMissiles].sort((a, b) => a.rangeKm - b.rangeKm);
   const distToIsrael = 1600;
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const countryHitData = (id: string) => targetDistribution.find(t => t.id === id);
+  const baseData = (id: string) => usBases.find(b => b.id === id);
 
   return (
     <div className="w-full space-y-4" dir="ltr">
@@ -240,8 +251,8 @@ const MissileRangeMap: React.FC = () => {
             <span className="text-[10px] font-heebo text-muted-foreground">MRBM</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded border border-dashed border-muted-foreground" />
-            <span className="text-[10px] font-heebo text-muted-foreground">{lang === "he" ? "מספר פגיעות" : "Hit intensity"}</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-usa" />
+            <span className="text-[10px] font-heebo text-muted-foreground">{lang === "he" ? "בסיס אמריקאי" : "US Base"}</span>
           </div>
         </div>
         <button
@@ -254,23 +265,17 @@ const MissileRangeMap: React.FC = () => {
         </button>
       </div>
 
-      {/* Map */}
-      <div className="overflow-x-auto rounded-xl border border-border bg-[hsl(213,30%,6%)]">
-        <svg viewBox={`0 0 ${MAP.width} ${MAP.height}`} className="w-full h-auto" style={{ minHeight: 380 }}>
+      {/* Map container with tooltip */}
+      <div className="relative overflow-x-auto rounded-xl border border-border bg-[hsl(213,30%,6%)]" onMouseMove={handleMouseMove}>
+        <svg ref={svgRef} viewBox={`0 0 ${MAP.width} ${MAP.height}`} className="w-full h-auto" style={{ minHeight: 380 }}>
           <defs>
             <filter id="glow-map">
               <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+              <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <filter id="glow-sm">
               <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+              <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <style>{`
               @keyframes pulse-ring { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
@@ -279,7 +284,7 @@ const MissileRangeMap: React.FC = () => {
             `}</style>
           </defs>
 
-          {/* Ocean background */}
+          {/* Ocean */}
           <rect width={MAP.width} height={MAP.height} fill="hsl(213,30%,6%)" />
 
           {/* Grid */}
@@ -292,7 +297,7 @@ const MissileRangeMap: React.FC = () => {
             return <line key={`glat-${lat}`} x1={0} y1={y} x2={MAP.width} y2={y} stroke="hsl(213,20%,12%)" strokeWidth={0.5} />;
           })}
 
-          {/* Country fills — base layer */}
+          {/* Country fills */}
           {countries.map(c => {
             const pts = c.outline.map(([lo, la]) => project(lo, la).join(",")).join(" ");
             const isIran = c.id === "iran";
@@ -304,46 +309,54 @@ const MissileRangeMap: React.FC = () => {
             );
           })}
 
-          {/* Heatmap overlay for attacked countries */}
+          {/* Heatmap overlay */}
           {countries.map(c => {
             const heat = getHeatColor(c.id);
             if (!heat) return null;
             const pts = c.outline.map(([lo, la]) => project(lo, la).join(",")).join(" ");
+            const isHovered = hoveredCountry === c.id;
             return (
               <polygon key={`heat-${c.id}`} points={pts} fill={heat}
-                stroke="none" />
+                stroke={isHovered ? "hsl(0,70%,60%)" : "none"}
+                strokeWidth={isHovered ? 2 : 0}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredCountry(c.id)}
+                onMouseLeave={() => setHoveredCountry(null)}
+              />
             );
           })}
 
-          {/* Country borders — top layer */}
+          {/* Country borders */}
           {countries.map(c => {
             const pts = c.outline.map(([lo, la]) => project(lo, la).join(",")).join(" ");
             const isMain = c.id === "iran" || c.id === "israel";
             return (
               <polygon key={`border-${c.id}`} points={pts} fill="none"
                 stroke={isMain ? "hsl(0,0%,45%)" : "hsl(0,0%,25%)"}
-                strokeWidth={isMain ? 1.5 : 0.7} strokeLinejoin="round" />
+                strokeWidth={isMain ? 1.5 : 0.7} strokeLinejoin="round"
+                pointerEvents="none" />
             );
           })}
 
-          {/* Country labels */}
+          {/* Country labels — clean, just name */}
           {countries.map(c => {
             const [lx, ly] = project(c.labelPos[0], c.labelPos[1]);
             const isMain = c.id === "iran" || c.id === "israel";
-            const hits = hitMap[c.id];
+            const hasHits = !!hitMap[c.id];
             return (
-              <g key={`lbl-${c.id}`}>
+              <g key={`lbl-${c.id}`}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredCountry(c.id)}
+                onMouseLeave={() => setHoveredCountry(null)}
+              >
                 <text x={lx} y={ly} fill={isMain ? "hsl(0,0%,90%)" : "hsl(0,0%,55%)"}
-                  fontSize={isMain ? 14 : 9} fontWeight={isMain ? 800 : 500}
+                  fontSize={isMain ? 13 : 9} fontWeight={isMain ? 800 : 500}
                   fontFamily="Heebo, sans-serif" textAnchor="middle" dominantBaseline="middle">
                   {lang === "he" ? c.nameHe : c.nameEn}
                 </text>
-                {hits && (
-                  <text x={lx} y={ly + (isMain ? 16 : 11)}
-                    fill="hsl(0,70%,65%)" fontSize={10} fontWeight={700}
-                    fontFamily="monospace" textAnchor="middle" dominantBaseline="middle">
-                    {hits.toLocaleString()} {lang === "he" ? "קליעים" : "proj."}
-                  </text>
+                {hasHits && (
+                  <circle cx={lx + (isMain ? -35 : -20)} cy={ly - 1} r={3}
+                    fill="hsl(0,70%,55%)" opacity={0.8} />
                 )}
               </g>
             );
@@ -365,20 +378,21 @@ const MissileRangeMap: React.FC = () => {
                   opacity={0.65}
                   style={{ animation: "pulse-ring 3s ease-in-out infinite", animationDelay: `${i * 0.15}s` }}
                 />
-                {/* Label */}
-                {(() => {
-                  const angle = -25 - i * 10;
+                {/* Label on arc — only when hovered or single active */}
+                {(activeId === m.id || activeId === null) && (() => {
+                  const angle = -20 - i * 10;
                   const rad = (angle * Math.PI) / 180;
                   const lx = launchX + radiusPx * Math.cos(rad);
                   const ly = launchY + radiusPx * Math.sin(rad);
                   if (lx < 5 || lx > MAP.width - 5 || ly < 5 || ly > MAP.height - 5) return null;
+                  const isHighlighted = activeId === m.id;
                   return (
-                    <g>
-                      <rect x={lx - 42} y={ly - 9} width={84} height={18} rx={4}
-                        fill="hsl(0,0%,5%)" fillOpacity={0.9} stroke={color} strokeWidth={0.6} />
-                      <text x={lx} y={ly + 4} fill={color} fontSize={9} fontWeight={700}
-                        fontFamily="Heebo, sans-serif" textAnchor="middle">
-                        {(lang === "he" ? m.nameHe : m.nameEn)} — {m.rangeKm.toLocaleString()} km
+                    <g opacity={isHighlighted ? 1 : 0.7}>
+                      <rect x={lx - 30} y={ly - 8} width={60} height={16} rx={3}
+                        fill="hsl(0,0%,5%)" fillOpacity={0.9} stroke={color} strokeWidth={isHighlighted ? 1 : 0.4} />
+                      <text x={lx} y={ly + 4} fill={color} fontSize={8} fontWeight={700}
+                        fontFamily="monospace" textAnchor="middle">
+                        {m.rangeKm.toLocaleString()} km
                       </text>
                     </g>
                   );
@@ -387,20 +401,17 @@ const MissileRangeMap: React.FC = () => {
             );
           })}
 
-          {/* US Bases */}
+          {/* US Bases — just dots, details on hover */}
           {showBases && usBases.map(base => {
             const [bx, by] = project(base.lon, base.lat);
             return (
-              <g key={base.id}>
-                <circle cx={bx} cy={by} r={3} fill="hsl(var(--usa))" opacity={0.9}
+              <g key={base.id} className="cursor-pointer"
+                onMouseEnter={() => setHoveredBase(base.id)}
+                onMouseLeave={() => setHoveredBase(null)}
+              >
+                <circle cx={bx} cy={by} r={3.5} fill="hsl(var(--usa))" opacity={0.9}
                   style={{ animation: "base-pulse 2s ease-in-out infinite" }} />
-                <circle cx={bx} cy={by} r={6} fill="none" stroke="hsl(var(--usa))" strokeWidth={0.8} opacity={0.4} />
-                <rect x={bx + 8} y={by - 8} width={lang === "he" ? 90 : 85} height={16} rx={3}
-                  fill="hsl(0,0%,5%)" fillOpacity={0.9} stroke="hsl(var(--usa))" strokeWidth={0.4} />
-                <text x={bx + 12} y={by + 4} fill="hsl(var(--usa))" fontSize={8} fontWeight={600}
-                  fontFamily="Heebo, sans-serif">
-                  🇺🇸 {lang === "he" ? base.nameHe : base.nameEn}
-                </text>
+                <circle cx={bx} cy={by} r={7} fill="none" stroke="hsl(var(--usa))" strokeWidth={0.6} opacity={0.3} />
               </g>
             );
           })}
@@ -409,16 +420,16 @@ const MissileRangeMap: React.FC = () => {
           <circle cx={launchX} cy={launchY} r={7} fill="#ef4444" opacity={0.3} filter="url(#glow-map)" />
           <circle cx={launchX} cy={launchY} r={4} fill="#ef4444" />
           <circle cx={launchX} cy={launchY} r={1.5} fill="white" />
-          <text x={launchX} y={launchY - 14} fill="#ef4444" fontSize={11} fontWeight={800}
+          <text x={launchX} y={launchY - 14} fill="#ef4444" fontSize={10} fontWeight={800}
             fontFamily="Heebo, sans-serif" textAnchor="middle">
-            {lang === "he" ? "נקודת שיגור" : "Launch Point"}
+            {lang === "he" ? "שיגור" : "Launch"}
           </text>
 
           {/* Target — Tel Aviv */}
           <circle cx={targetX} cy={targetY} r={5} fill="hsl(213,80%,55%)" opacity={0.3} filter="url(#glow-sm)" />
           <circle cx={targetX} cy={targetY} r={3} fill="hsl(213,80%,55%)" />
           <circle cx={targetX} cy={targetY} r={1} fill="white" />
-          <text x={targetX - 2} y={targetY + 16} fill="hsl(213,80%,70%)" fontSize={9} fontWeight={700}
+          <text x={targetX - 2} y={targetY + 14} fill="hsl(213,80%,70%)" fontSize={8} fontWeight={700}
             fontFamily="Heebo, sans-serif" textAnchor="end">
             {lang === "he" ? "תל אביב" : "Tel Aviv"}
           </text>
@@ -432,9 +443,9 @@ const MissileRangeMap: React.FC = () => {
             const my = (launchY + targetY) / 2 - 14;
             return (
               <g>
-                <rect x={mx - 40} y={my - 10} width={80} height={20} rx={5}
+                <rect x={mx - 38} y={my - 9} width={76} height={18} rx={4}
                   fill="hsl(0,0%,5%)" fillOpacity={0.9} stroke="hsl(0,0%,35%)" strokeWidth={0.5} />
-                <text x={mx} y={my + 4} fill="hsl(0,0%,85%)" fontSize={11} fontWeight={700}
+                <text x={mx} y={my + 4} fill="hsl(0,0%,85%)" fontSize={10} fontWeight={700}
                   fontFamily="monospace" textAnchor="middle">~1,600 km</text>
               </g>
             );
@@ -457,6 +468,84 @@ const MissileRangeMap: React.FC = () => {
             );
           })()}
         </svg>
+
+        {/* HTML Tooltip — Country hover */}
+        {hoveredCountry && (() => {
+          const hit = countryHitData(hoveredCountry);
+          const c = countries.find(c => c.id === hoveredCountry);
+          if (!c) return null;
+          return (
+            <div
+              className="absolute z-50 pointer-events-none"
+              style={{ left: mousePos.x + 16, top: mousePos.y - 10 }}
+            >
+              <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 shadow-xl min-w-[180px]">
+                <div className="font-heebo font-bold text-foreground text-sm mb-1">
+                  {lang === "he" ? c.nameHe : c.nameEn}
+                </div>
+                {hit ? (
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground font-frank">{lang === "he" ? "קליעים" : "Projectiles"}</span>
+                      <span className="font-heebo font-bold text-loss">{hit.estimatedProjectiles.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground font-frank">{lang === "he" ? "אחוז מסה\"כ" : "% of total"}</span>
+                      <span className="font-heebo font-bold text-foreground">{hit.percent}%</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground font-frank">{lang === "he" ? "שיעור יירוט" : "Intercept rate"}</span>
+                      <span className="font-heebo font-bold text-primary">{hit.interceptRatePercent}%</span>
+                    </div>
+                    <div className="text-[9px] text-muted-foreground font-frank pt-1 border-t border-border/50">
+                      {hit.source}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-[10px] text-muted-foreground font-frank">
+                    {lang === "he" ? "לא הותקפה" : "Not targeted"}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* HTML Tooltip — Base hover */}
+        {hoveredBase && (() => {
+          const base = baseData(hoveredBase);
+          if (!base) return null;
+          const hit = countryHitData(base.country);
+          return (
+            <div
+              className="absolute z-50 pointer-events-none"
+              style={{ left: mousePos.x + 16, top: mousePos.y - 10 }}
+            >
+              <div className="bg-background/95 backdrop-blur-sm border border-usa/30 rounded-lg px-3 py-2 shadow-xl min-w-[180px]">
+                <div className="font-heebo font-bold text-usa text-sm mb-1">
+                  🇺🇸 {lang === "he" ? base.nameHe : base.nameEn}
+                </div>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground font-frank">{lang === "he" ? "מדינה" : "Country"}</span>
+                    <span className="font-heebo font-bold text-foreground">
+                      {countries.find(c => c.id === base.country)?.[lang === "he" ? "nameHe" : "nameEn"] || base.country}
+                    </span>
+                  </div>
+                  {hit && (
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground font-frank">{lang === "he" ? "קליעים לאזור" : "Area projectiles"}</span>
+                      <span className="font-heebo font-bold text-loss">{hit.estimatedProjectiles.toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="text-[9px] text-muted-foreground font-frank pt-1 border-t border-border/50">
+                    {lang === "he" ? "בסיס צבאי אמריקאי שהותקף" : "US military base — targeted"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Missile legend */}
@@ -488,38 +577,6 @@ const MissileRangeMap: React.FC = () => {
             </button>
           );
         })}
-      </div>
-
-      {/* Hit summary table */}
-      <div className="rounded-lg border border-border overflow-hidden">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="bg-muted/50 border-b border-border">
-              <th className="text-start font-heebo font-bold px-3 py-2 text-foreground">{lang === "he" ? "מדינת יעד" : "Target Country"}</th>
-              <th className="text-center font-heebo font-bold px-2 py-2 text-foreground">{lang === "he" ? "קליעים" : "Projectiles"}</th>
-              <th className="text-center font-heebo font-bold px-2 py-2 text-foreground">%</th>
-              <th className="text-center font-heebo font-bold px-2 py-2 text-foreground">{lang === "he" ? "יירוט" : "Intercept"}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {targetDistribution.sort((a, b) => b.estimatedProjectiles - a.estimatedProjectiles).map((t, i) => (
-              <tr key={t.id} className={`border-b border-border/50 ${i % 2 ? "bg-muted/10" : ""}`}>
-                <td className="px-3 py-2 font-heebo font-bold text-foreground">
-                  {lang === "he" ? t.nameHe : t.nameEn}
-                </td>
-                <td className="text-center px-2 py-2 font-frank tabular-nums text-loss font-bold">
-                  {t.estimatedProjectiles.toLocaleString()}
-                </td>
-                <td className="text-center px-2 py-2 font-frank tabular-nums text-muted-foreground">
-                  {t.percent}%
-                </td>
-                <td className="text-center px-2 py-2 font-frank tabular-nums text-primary font-bold">
-                  {t.interceptRatePercent}%
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
 
       {/* Source */}
