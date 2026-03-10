@@ -104,6 +104,7 @@ const Index = () => {
           <ChartsSection />
         ) : activeTab === "forecast" ? (
           <ForecastSection />
+        ) : (
           <section className="px-4 sm:px-8 py-8 space-y-5">
             <div className="pb-3 mb-2">
               <div className="flex items-center gap-2 mb-1">
