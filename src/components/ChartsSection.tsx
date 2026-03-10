@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 import FireRateCollapseChart from "@/components/charts/FireRateCollapseChart";
