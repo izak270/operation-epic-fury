@@ -21,6 +21,24 @@ interface ChartCard {
 
 const ChartsSection: React.FC = () => {
   const { t } = useLanguage();
+  const [highlightedMissileId, setHighlightedMissileId] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleMissileClick = useCallback((id: string) => {
+    setHighlightedMissileId(id);
+    clearTimeout(highlightTimer.current);
+
+    // Scroll to the radar table row
+    setTimeout(() => {
+      const row = document.getElementById(`missile-row-${id}`);
+      row?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+
+    // Clear highlight after 3s
+    highlightTimer.current = setTimeout(() => {
+      setHighlightedMissileId(null);
+    }, 3000);
+  }, []);
 
   const charts: ChartCard[] = [
     {
