@@ -3,12 +3,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { dataVersions } from "@/data/militaryData";
 import ForceModule from "@/components/ForceModule";
 import ChartsSection from "@/components/ChartsSection";
+import ForecastSection from "@/components/ForecastSection";
 import MissileRangeMap from "@/components/charts/MissileRangeMap";
 
 const Index = () => {
   const { t, toggle, lang } = useLanguage();
   const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1);
-  const [activeTab, setActiveTab] = useState<"data" | "charts" | "map">("data");
+  const [activeTab, setActiveTab] = useState<"data" | "charts" | "forecast" | "map">("data");
   const currentVersion = dataVersions[versionIdx];
 
   return (
