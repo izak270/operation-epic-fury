@@ -3,12 +3,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { dataVersions } from "@/data/militaryData";
 import ForceModule from "@/components/ForceModule";
 import ChartsSection from "@/components/ChartsSection";
+import ForecastSection from "@/components/ForecastSection";
 import MissileRangeMap from "@/components/charts/MissileRangeMap";
 
 const Index = () => {
   const { t, toggle, lang } = useLanguage();
   const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1);
-  const [activeTab, setActiveTab] = useState<"data" | "charts" | "map">("data");
+  const [activeTab, setActiveTab] = useState<"data" | "charts" | "forecast" | "map">("data");
   const currentVersion = dataVersions[versionIdx];
 
   return (
@@ -74,7 +75,7 @@ const Index = () => {
 
           {/* Tab nav */}
           <div className="flex rounded-lg border border-border overflow-hidden">
-            {(["data", "charts", "map"] as const).map(tab => (
+            {(["data", "charts", "forecast", "map"] as const).map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -101,6 +102,8 @@ const Index = () => {
           </>
         ) : activeTab === "charts" ? (
           <ChartsSection />
+        ) : activeTab === "forecast" ? (
+          <ForecastSection />
         ) : (
           <section className="px-4 sm:px-8 py-8 space-y-5">
             <div className="pb-3 mb-2">
