@@ -146,15 +146,12 @@ const Index = () => {
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-heebo text-center mt-3">
-            Powered by{" "}
-            <a
-              href="https://aiorchestration.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-bold text-foreground hover:underline"
-            >
-              AIORCHESTRATION.AI
-            </a>
+            {lang === "he" 
+              ? "לזכר חללי צבא ההגנה לישראל וכוחות הביטחון" 
+              : "In memory of the fallen soldiers of the Israel Defense Forces and security forces"}
+          </p>
+          <p className="text-[10px] text-muted-foreground/60 font-heebo text-center mt-2">
+            AIORCHESTRATION.AI
           </p>
         </div>
       </footer>
