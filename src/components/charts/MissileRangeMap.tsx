@@ -207,7 +207,11 @@ const getHeatColor = (countryId: string): string | null => {
   return `hsla(0, 70%, 50%, ${intensity})`;
 };
 
-const MissileRangeMap: React.FC = () => {
+interface MissileRangeMapProps {
+  onMissileClick?: (id: string) => void;
+}
+
+const MissileRangeMap: React.FC<MissileRangeMapProps> = ({ onMissileClick }) => {
   const { lang } = useLanguage();
   const iranMissiles = getIranMissiles();
   const [activeId, setActiveId] = useState<string | null>(null);
