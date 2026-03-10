@@ -99,8 +99,25 @@ const Index = () => {
               <ForceModule key={`${currentVersion.id}-${cat.id}`} category={cat} index={i} />
             ))}
           </>
-        ) : (
+        ) : activeTab === "charts" ? (
           <ChartsSection />
+        ) : (
+          <section className="px-4 sm:px-8 py-8 space-y-5">
+            <div className="pb-3 mb-2">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1 h-5 rounded-full bg-primary" />
+                <h2 className="font-heebo font-black text-lg sm:text-xl">
+                  {t("chart.missileMap.title")}
+                </h2>
+              </div>
+              <p className="text-xs text-muted-foreground font-frank mt-1 ltr:ml-3 rtl:mr-3">
+                {t("chart.missileMap.subtitle")}
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+              <MissileRangeMap />
+            </div>
+          </section>
         )}
       </main>
 
