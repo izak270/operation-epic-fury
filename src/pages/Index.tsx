@@ -168,7 +168,7 @@ const Index = () => {
         </div>
       </footer>
 
-      <FeedbackForm />
+      <AiChat />
     </div>
   );
 };
