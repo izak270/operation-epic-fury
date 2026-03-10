@@ -49,9 +49,11 @@ const MissileRangeRadar: React.FC = () => {
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.range")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.warhead")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.qty")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground bg-loss/5">{lang === "he" ? "כמות היום" : "Current Qty"}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground">{t("missile.cost")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden sm:table-cell">{t("missile.propulsion")}</th>
               <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden md:table-cell">{t("missile.production")}</th>
+              <th className="text-center font-heebo font-bold px-2 py-2.5 text-foreground hidden md:table-cell bg-loss/5">{lang === "he" ? "ייצור היום" : "Current Prod."}</th>
             </tr>
           </thead>
           <tbody>
