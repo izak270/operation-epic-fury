@@ -18,7 +18,7 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
 
   const isBanner = bannerIds.includes(category.id);
 
-  // Banner-style row — spans full width with a single label
+  // Banner-style row
   if (isBanner) {
     return (
       <div className="border-b border-border py-4 px-4 sm:px-8 bg-loss/5">
@@ -35,15 +35,25 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
   }
 
   const isCasualty = category.id === "mil_kia" || category.id === "civ_killed";
+  const isNewCategory = ["ammunition", "interceptors", "air_defense", "uav_fleet", "tel_launchers", "munitions_cost"].includes(category.id);
 
   return (
-    <div className={`border-b border-border py-6 px-4 sm:px-8 ${isCasualty ? "bg-loss/5" : ""}`}>
+    <div className={`border-b border-border py-6 px-4 sm:px-8 transition-colors ${
+      isCasualty ? "bg-loss/5" : isNewCategory ? "bg-primary/[0.03]" : ""
+    }`}>
       {/* Category title */}
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className={`font-heebo font-bold text-base sm:text-lg ${isCasualty ? "text-loss" : "text-foreground"}`}>
-          {t(category.labelKey)}
-        </h2>
-        <span className="text-xs text-muted-foreground font-frank">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {isNewCategory && (
+            <span className="text-[8px] font-heebo font-bold uppercase tracking-widest text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+              v2
+            </span>
+          )}
+          <h2 className={`font-heebo font-bold text-base sm:text-lg ${isCasualty ? "text-loss" : "text-foreground"}`}>
+            {t(category.labelKey)}
+          </h2>
+        </div>
+        <span className="text-xs text-muted-foreground font-frank text-right flex-shrink-0 max-w-[45%]">
           {t("label.source")}: {category.source}
         </span>
       </div>
@@ -83,7 +93,7 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
 
               {/* Note */}
               {note && (
-                <span className="text-[10px] text-muted-foreground font-frank italic">
+                <span className="text-[10px] text-muted-foreground font-frank italic leading-tight">
                   {note === "est." ? t("label.est")
                     : note === "N/A" ? t("label.na")
                     : note === "since Oct 2023" ? t("note.since_oct_2023")
