@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { dataVersions } from "@/data/militaryData";
 import ForceModule from "@/components/ForceModule";
+import ChartsSection from "@/components/ChartsSection";
 
 const Index = () => {
   const { t, toggle, lang } = useLanguage();
-  const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1); // default to latest
+  const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1);
+  const [activeTab, setActiveTab] = useState<"data" | "charts">("data");
   const currentVersion = dataVersions[versionIdx];
 
   return (
@@ -46,19 +48,47 @@ const Index = () => {
             </button>
           </div>
         </div>
-        {/* Version info bar */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-8 pb-2">
+        {/* Tab nav + version info */}
+        <div className="max-w-3xl mx-auto px-4 sm:px-8 pb-2 flex items-center justify-between">
           <p className="text-[11px] text-muted-foreground font-frank">
             {t(currentVersion.labelKey)} — {currentVersion.date}
           </p>
+          <div className="flex rounded-md border border-border overflow-hidden">
+            <button
+              onClick={() => setActiveTab("data")}
+              className={`px-3 py-1 text-xs font-heebo font-bold transition-colors ${
+                activeTab === "data"
+                  ? "bg-foreground text-background"
+                  : "hover:bg-muted text-muted-foreground"
+              }`}
+            >
+              {t("nav.data")}
+            </button>
+            <button
+              onClick={() => setActiveTab("charts")}
+              className={`px-3 py-1 text-xs font-heebo font-bold transition-colors ${
+                activeTab === "charts"
+                  ? "bg-foreground text-background"
+                  : "hover:bg-muted text-muted-foreground"
+              }`}
+            >
+              {t("nav.charts")}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Modules */}
+      {/* Content */}
       <main className="max-w-3xl mx-auto">
-        {currentVersion.categories.map((cat, i) => (
-          <ForceModule key={`${currentVersion.id}-${cat.id}`} category={cat} index={i} />
-        ))}
+        {activeTab === "data" ? (
+          <>
+            {currentVersion.categories.map((cat, i) => (
+              <ForceModule key={`${currentVersion.id}-${cat.id}`} category={cat} index={i} />
+            ))}
+          </>
+        ) : (
+          <ChartsSection />
+        )}
       </main>
 
       {/* Footer */}
