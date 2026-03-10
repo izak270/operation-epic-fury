@@ -3,15 +3,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { getIranMissiles } from "@/data/arsenalData";
 
 // Production estimates (units/year) — sourced from CSIS, IISS
-const productionEstimates: Record<string, { ratePerYear: number; noteEn: string; noteHe: string }> = {
-  "fateh-110": { ratePerYear: 100, noteEn: "Mature production line", noteHe: "קו ייצור בוגר" },
-  "zolfaghar": { ratePerYear: 60, noteEn: "Active production", noteHe: "ייצור פעיל" },
-  "shahab-3": { ratePerYear: 30, noteEn: "Slowed — shifting to solid-fuel", noteHe: "מואט — מעבר לדלק מוצק" },
-  "haj-qassem": { ratePerYear: 40, noteEn: "Priority production line", noteHe: "קו ייצור בעדיפות" },
-  "fattah-1": { ratePerYear: 15, noteEn: "New — limited production", noteHe: "חדש — ייצור מוגבל" },
-  "kheibar-shekan": { ratePerYear: 50, noteEn: "High priority", noteHe: "עדיפות גבוהה" },
-  "sejjil": { ratePerYear: 20, noteEn: "Complex — dual-stage solid", noteHe: "מורכב — דו-שלבי מוצק" },
-  "khorramshahr": { ratePerYear: 10, noteEn: "Limited — liquid fuel", noteHe: "מוגבל — דלק נוזלי" },
+const productionEstimates: Record<string, { 
+  ratePerYear: number; 
+  currentRatePerYear: number;
+  currentQty: number;
+  noteEn: string; noteHe: string;
+  currentNoteEn: string; currentNoteHe: string;
+}> = {
+  "fateh-110": { ratePerYear: 100, currentRatePerYear: 40, currentQty: 180, noteEn: "Mature production line", noteHe: "קו ייצור בוגר", currentNoteEn: "Facilities hit — reduced capacity", currentNoteHe: "מתקנים נפגעו — קיבולת מופחתת" },
+  "zolfaghar": { ratePerYear: 60, currentRatePerYear: 25, currentQty: 120, noteEn: "Active production", noteHe: "ייצור פעיל", currentNoteEn: "Supply chain disrupted", currentNoteHe: "שרשרת אספקה שובשה" },
+  "shahab-3": { ratePerYear: 30, currentRatePerYear: 10, currentQty: 200, noteEn: "Slowed — shifting to solid-fuel", noteHe: "מואט — מעבר לדלק מוצק", currentNoteEn: "Low priority — aging system", currentNoteHe: "עדיפות נמוכה — מערכת מתיישנת" },
+  "haj-qassem": { ratePerYear: 40, currentRatePerYear: 20, currentQty: 90, noteEn: "Priority production line", noteHe: "קו ייצור בעדיפות", currentNoteEn: "Partial damage to line", currentNoteHe: "נזק חלקי לקו הייצור" },
+  "fattah-1": { ratePerYear: 15, currentRatePerYear: 8, currentQty: 50, noteEn: "New — limited production", noteHe: "חדש — ייצור מוגבל", currentNoteEn: "Still ramping up", currentNoteHe: "עדיין בהרצה" },
+  "kheibar-shekan": { ratePerYear: 50, currentRatePerYear: 20, currentQty: 100, noteEn: "High priority", noteHe: "עדיפות גבוהה", currentNoteEn: "Key facilities targeted", currentNoteHe: "מתקני מפתח הותקפו" },
+  "sejjil": { ratePerYear: 20, currentRatePerYear: 5, currentQty: 60, noteEn: "Complex — dual-stage solid", noteHe: "מורכב — דו-שלבי מוצק", currentNoteEn: "Severely degraded", currentNoteHe: "נפגע קשות" },
+  "khorramshahr": { ratePerYear: 10, currentRatePerYear: 3, currentQty: 40, noteEn: "Limited — liquid fuel", noteHe: "מוגבל — דלק נוזלי", currentNoteEn: "Near halt", currentNoteHe: "כמעט עצירה" },
 };
 
 const propulsionLabels: Record<string, Record<string, string>> = {
