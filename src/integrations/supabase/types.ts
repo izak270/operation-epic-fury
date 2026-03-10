@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      data_research: {
+        Row: {
+          batch_id: string
+          category: string
+          change_description: string | null
+          confidence: string | null
+          country: string
+          created_at: string
+          current_value: string | null
+          id: string
+          previous_value: string | null
+          raw_response: string | null
+          source: string | null
+        }
+        Insert: {
+          batch_id: string
+          category: string
+          change_description?: string | null
+          confidence?: string | null
+          country: string
+          created_at?: string
+          current_value?: string | null
+          id?: string
+          previous_value?: string | null
+          raw_response?: string | null
+          source?: string | null
+        }
+        Update: {
+          batch_id?: string
+          category?: string
+          change_description?: string | null
+          confidence?: string | null
+          country?: string
+          created_at?: string
+          current_value?: string | null
+          id?: string
+          previous_value?: string | null
+          raw_response?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           category: string | null
