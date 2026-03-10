@@ -135,38 +135,74 @@ const MissileRangeRadar: React.FC = () => {
       </div>
 
       {/* Total summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-3 py-3 bg-muted/20 rounded-lg border border-border/50">
-        <div className="text-xs font-frank text-muted-foreground">
-          <span className="font-heebo font-bold text-foreground text-sm">
-            {iranMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0).toLocaleString()}
-          </span>
-          <div>{lang === "he" ? "טרום מלחמה" : "pre-war total"}</div>
-        </div>
-        <div className="text-xs font-frank text-muted-foreground">
-          <span className="font-heebo font-bold text-loss text-sm">
-            {Object.values(productionEstimates).reduce((s, p) => s + p.currentQty, 0).toLocaleString()}
-          </span>
-          <div>{lang === "he" ? "כמות היום (הערכה)" : "current est. total"}</div>
-        </div>
-        <div className="text-xs font-frank text-muted-foreground">
-          <span className="font-heebo font-bold text-foreground text-sm">
-            {formatUSD(iranMissiles.reduce((s, m) => s + (m.preWarQty || 0) * (m.unitCostUSD || 0), 0))}
-          </span>
-          <div>{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}</div>
-        </div>
-        <div className="text-xs font-frank text-muted-foreground">
-          <span className="font-heebo font-bold text-primary text-sm">
-            ~{Object.values(productionEstimates).reduce((s, p) => s + p.ratePerYear, 0)}
-          </span>
-          <div>{lang === "he" ? "ייצור שנתי (טרום)" : "annual prod. (pre-war)"}</div>
-        </div>
-        <div className="text-xs font-frank text-muted-foreground">
-          <span className="font-heebo font-bold text-loss text-sm">
-            ~{Object.values(productionEstimates).reduce((s, p) => s + p.currentRatePerYear, 0)}
-          </span>
-          <div>{lang === "he" ? "ייצור שנתי (היום)" : "annual prod. (current)"}</div>
-        </div>
-      </div>
+      {(() => {
+        const REACH_ISRAEL_KM = 1300;
+        const reachMissiles = iranMissiles.filter(m => m.rangeKm >= REACH_ISRAEL_KM);
+        const reachPreWarQty = reachMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0);
+        const reachCurrentQty = reachMissiles.reduce((s, m) => s + (productionEstimates[m.id]?.currentQty || 0), 0);
+
+        return (
+          <div className="space-y-3">
+            {/* Reaches Israel highlight */}
+            <div className="px-4 py-3 bg-loss/10 rounded-lg border border-loss/30 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-loss animate-pulse" />
+                <span className="font-heebo font-bold text-loss text-sm">
+                  {lang === "he" ? "מגיע לישראל (טווח ≥ 1,300 ק\"מ)" : "Reaches Israel (range ≥ 1,300 km)"}
+                </span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-xs font-frank text-muted-foreground">
+                  <span className="font-heebo font-bold text-foreground text-sm">{reachMissiles.length}</span>
+                  {" "}{lang === "he" ? "סוגי טילים" : "missile types"}
+                </div>
+                <div className="text-xs font-frank text-muted-foreground">
+                  <span className="font-heebo font-bold text-foreground text-sm">{reachPreWarQty.toLocaleString()}</span>
+                  {" "}{lang === "he" ? "טרום מלחמה" : "pre-war"}
+                </div>
+                <div className="text-xs font-frank text-muted-foreground">
+                  <span className="font-heebo font-bold text-loss text-sm">{reachCurrentQty.toLocaleString()}</span>
+                  {" "}{lang === "he" ? "היום (הערכה)" : "current (est.)"}
+                </div>
+              </div>
+            </div>
+
+            {/* General stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-3 py-3 bg-muted/20 rounded-lg border border-border/50">
+              <div className="text-xs font-frank text-muted-foreground">
+                <span className="font-heebo font-bold text-foreground text-sm">
+                  {iranMissiles.reduce((s, m) => s + (m.preWarQty || 0), 0).toLocaleString()}
+                </span>
+                <div>{lang === "he" ? "סה\"כ טרום מלחמה" : "total pre-war"}</div>
+              </div>
+              <div className="text-xs font-frank text-muted-foreground">
+                <span className="font-heebo font-bold text-loss text-sm">
+                  {Object.values(productionEstimates).reduce((s, p) => s + p.currentQty, 0).toLocaleString()}
+                </span>
+                <div>{lang === "he" ? "סה\"כ היום (הערכה)" : "total current (est.)"}</div>
+              </div>
+              <div className="text-xs font-frank text-muted-foreground">
+                <span className="font-heebo font-bold text-foreground text-sm">
+                  {formatUSD(iranMissiles.reduce((s, m) => s + (m.preWarQty || 0) * (m.unitCostUSD || 0), 0))}
+                </span>
+                <div>{lang === "he" ? "שווי ארסנל מוערך" : "est. arsenal value"}</div>
+              </div>
+              <div className="text-xs font-frank text-muted-foreground">
+                <span className="font-heebo font-bold text-primary text-sm">
+                  ~{Object.values(productionEstimates).reduce((s, p) => s + p.ratePerYear, 0)}
+                </span>
+                <div>{lang === "he" ? "ייצור שנתי (טרום)" : "annual prod. (pre-war)"}</div>
+              </div>
+              <div className="text-xs font-frank text-muted-foreground">
+                <span className="font-heebo font-bold text-loss text-sm">
+                  ~{Object.values(productionEstimates).reduce((s, p) => s + p.currentRatePerYear, 0)}
+                </span>
+                <div>{lang === "he" ? "ייצור שנתי (היום)" : "annual prod. (current)"}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Source note */}
       <p className="text-[9px] text-muted-foreground font-frank px-1">
