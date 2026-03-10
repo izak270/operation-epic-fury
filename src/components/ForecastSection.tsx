@@ -221,7 +221,7 @@ const ForecastSection: React.FC = () => {
               <XAxis dataKey="label" stroke="hsl(0,0%,55%)" fontSize={10} />
               <YAxis yAxisId="left" stroke="hsl(0,0%,55%)" fontSize={11} label={{ value: "TELs", angle: -90, position: "insideLeft", fill: "hsl(0,0%,55%)", fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" domain={[80, 100]} stroke="hsl(0,0%,55%)" fontSize={11} label={{ value: "%", angle: 90, position: "insideRight", fill: "hsl(0,0%,55%)", fontSize: 10 }} />
-              <ReferenceLine x={`${lang === "he" ? "יום" : "D"}10`} stroke="hsl(0,0%,30%)" strokeDasharray="5 5" />
+              <ReferenceLine yAxisId="left" x={`${lang === "he" ? "יום" : "D"}10`} stroke="hsl(0,0%,30%)" strokeDasharray="5 5" />
               <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "hsl(0,0%,91%)" }} />
               <Bar yAxisId="left" dataKey="tels" name={lang === "he" ? "משגרים פעילים" : "Active TELs"} fill="hsl(30, 60%, 45%)" fillOpacity={0.6} radius={[2, 2, 0, 0]} />
               <Line yAxisId="right" type="monotone" dataKey="interceptRate" name={lang === "he" ? "אחוז יירוט" : "Intercept %"} stroke="hsl(150, 60%, 45%)" strokeWidth={2} dot={{ r: 3 }} />
