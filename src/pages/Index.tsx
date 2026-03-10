@@ -158,7 +158,7 @@ const Index = () => {
               rel="noopener noreferrer"
               className="hover:underline"
             >
-              AIORCHESTRATION.AI
+              AIO
             </a>
           </p>
         </div>
