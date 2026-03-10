@@ -41,6 +41,8 @@ const translations: Record<string, Record<Language, string>> = {
     he: "הנתונים מבוססים על הערכות פומביות. מקורות: GlobalFirepower 2026, IISS, SIPRI, נתוני צה״ל, JPost." 
   },
   "note.since_oct_2023": { en: "since Oct 2023", he: "מאז אוקטובר 2023" },
+  "note.inc_oct7": { en: "inc. Oct 7", he: "כולל 7 באוקטובר" },
+  "note.iran_claim": { en: "Iran claim", he: "לפי איראן" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
