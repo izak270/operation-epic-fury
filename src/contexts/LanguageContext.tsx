@@ -233,7 +233,7 @@ const translations: Record<string, Record<Language, string>> = {
   "missile.production": { en: "Est. Production", he: "ייצור מוערך" },
   "missile.propulsion": { en: "Propulsion", he: "הנעה" },
 
-  // Feedback
+  // Feedback (kept for backwards compat)
   "feedback.button": { en: "Feedback", he: "משוב" },
   "feedback.title": { en: "Send Feedback", he: "שלח משוב" },
   "feedback.type.correction": { en: "Data Correction", he: "תיקון נתון" },
@@ -247,6 +247,14 @@ const translations: Record<string, Record<Language, string>> = {
   "feedback.sending": { en: "Sending...", he: "שולח..." },
   "feedback.success": { en: "Thanks! Received.", he: "תודה! התקבל." },
   "feedback.error": { en: "Error, try again", he: "שגיאה, נסה שוב" },
+
+  // AI Chat
+  "chat.button": { en: "Ask AI", he: "שאל AI" },
+  "chat.title": { en: "Intelligence Analyst", he: "אנליסט מודיעין" },
+  "chat.welcome": { en: "Ask me anything about the military data", he: "שאל אותי כל שאלה על הנתונים הצבאיים" },
+  "chat.placeholder": { en: "Ask a question...", he: "שאל שאלה..." },
+  "chat.new": { en: "New conversation", he: "שיחה חדשה" },
+  "chat.disclaimer": { en: "AI analysis — verify with official sources", he: "ניתוח AI — אמת מול מקורות רשמיים" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
