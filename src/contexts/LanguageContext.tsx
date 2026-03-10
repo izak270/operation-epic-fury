@@ -40,6 +40,72 @@ const translations: Record<string, Record<Language, string>> = {
   "cat.tel_launchers": { en: "TEL Launchers (Mobile)", he: "משגרים ניידים (TEL)" },
   "cat.munitions_cost": { en: "Munitions Cost (Total)", he: "עלות תחמושת (סה״כ)" },
 
+  // Category descriptions
+  "desc.active": { 
+    en: "Full-time soldiers currently serving in the armed forces, including ground, air, and naval forces.",
+    he: "חיילים בשירות מלא בכוחות המזוינים, כולל כוחות יבשה, אוויר וים."
+  },
+  "desc.reserve": { 
+    en: "Trained military personnel who can be mobilized within 24-72 hours. Israel's reserve force is proportionally the largest.",
+    he: "אנשי צבא מאומנים שניתן לגייס תוך 24-72 שעות. כוח המילואים של ישראל הוא הגדול יחסית ביותר."
+  },
+  "desc.aircraft": { 
+    en: "Combat-ready fighter jets and attack aircraft including F-35, F-15, F-16 variants. Excludes transport and training.",
+    he: "מטוסי קרב ותקיפה מוכנים לפעולה כולל F-35, F-15, F-16. לא כולל הטסה ואימון."
+  },
+  "desc.tanks": { 
+    en: "Main Battle Tanks (MBTs) — heavy armored vehicles for ground warfare. Includes Abrams (US), Merkava (IL), T-72/Karrar (IR).",
+    he: "טנקי קרב ראשיים — כלי רכב משוריינים כבדים ללחימה קרקעית. כולל אברמס (ארה\"ב), מרכבה (ישראל), T-72/כרר (איראן)."
+  },
+  "desc.naval": { 
+    en: "Military ships including destroyers, frigates, submarines, corvettes, and patrol vessels.",
+    he: "כלי שיט צבאיים כולל משחתות, פריגטות, צוללות, קורבטות וספינות סיור."
+  },
+  "desc.missiles": { 
+    en: "Total missile inventory — ballistic (SRBM/MRBM), cruise missiles, and surface-to-air systems. Iran's arsenal decreased ~73% from strikes.",
+    he: "סך מלאי טילים — בליסטיים (טווח קצר/בינוני), טילי שיוט ומערכות קרקע-אוויר. ארסנל איראן ירד ~73% מתקיפות."
+  },
+  "desc.budget": { 
+    en: "Annual defense spending in USD. Israel's budget surged 59% due to wartime supplementary budgets approved by the Knesset.",
+    he: "הוצאות ביטחון שנתיות בדולר. תקציב ישראל זינק 59% בשל תקציבי מלחמה שאושרו בכנסת."
+  },
+  "desc.nuclear": { 
+    en: "Estimated nuclear warheads. Iran has no confirmed warheads but holds 128kg of 60% enriched uranium (near weapons-grade).",
+    he: "ראשי נפץ גרעיניים מוערכים. לאיראן אין ראשי נפץ מאושרים אך ברשותה 128 ק\"ג אורניום מועשר ל-60% (קרוב לדרגה צבאית)."
+  },
+  "desc.ammunition": { 
+    en: "Total munitions fired in first 10 days. US: Tomahawk + JASSM-ER + JDAM. Israel: Iron Dome + David's Sling + Arrow interceptors. Iran: ballistic missiles + cruise missiles.",
+    he: "סך תחמושת שנורתה ב-10 ימים ראשונים. ארה\"ב: טומהוק + JASSM-ER + JDAM. ישראל: כיפת ברזל + קלע דוד + חץ. איראן: טילים בליסטיים + טילי שיוט."
+  },
+  "desc.interceptors": { 
+    en: "Remaining interceptor missiles. US: SM-2/SM-3/SM-6 + Patriot PAC-3. Israel: Iron Dome Tamir + David's Sling Stunner + Arrow 2/3.",
+    he: "טילי מיירטים שנותרו. ארה\"ב: SM-2/SM-3/SM-6 + פטריוט PAC-3. ישראל: תמיר (כיפת ברזל) + סטאנר (קלע דוד) + חץ 2/3."
+  },
+  "desc.air_defense": { 
+    en: "Operational air defense battery sites. Iran lost ~80% of its S-300, Bavar-373, and Khordad-15 batteries to coalition strikes.",
+    he: "עמדות סוללות הגנה אווירית פעילות. איראן איבדה ~80% מסוללות S-300, באוור-373 וחורדאד-15 מתקיפות הקואליציה."
+  },
+  "desc.uav_fleet": { 
+    en: "Unmanned Aerial Vehicles. Iran launched ~3,850 Shahed-series drones; ~1,200 remain. Includes reconnaissance and attack variants.",
+    he: "כלי טיס בלתי מאוישים. איראן שיגרה ~3,850 כטב\"מים מסדרת שאהד; ~1,200 נותרו. כולל גרסאות סיור ותקיפה."
+  },
+  "desc.tel_launchers": { 
+    en: "Transporter Erector Launchers — mobile missile platforms that can relocate between firings. Iran had ~300, ~60% destroyed by airstrikes.",
+    he: "משגרים ניידים — פלטפורמות טילים שיכולות לשנות מיקום בין שיגורים. לאיראן היו ~300, ~60% הושמדו בתקיפות אוויריות."
+  },
+  "desc.munitions_cost": { 
+    en: "Estimated total cost of munitions expended. US costs dominated by SM-3 interceptors ($28M each). Iran's cost includes ~1,000 ballistic missiles.",
+    he: "עלות כוללת מוערכת של תחמושת שנורתה. עלויות ארה\"ב נשלטות ע\"י מיירטי SM-3 ($28 מיליון כ\"א). עלות איראן כוללת ~1,000 טילים בליסטיים."
+  },
+  "desc.mil_kia": { 
+    en: "Military and security forces killed in action. Israel figure includes all operations since October 2023.",
+    he: "הרוגי כוחות ביטחון וצבא בפעולה. נתון ישראל כולל את כל הפעולות מאז אוקטובר 2023."
+  },
+  "desc.civ_killed": { 
+    en: "Civilian fatalities within each country's borders from enemy attacks, including missile strikes and terror attacks.",
+    he: "הרוגים אזרחיים בתוך גבולות כל מדינה מתקיפות אויב, כולל מתקפות טילים ופיגועים."
+  },
+
   // Labels
   "label.source": { en: "Source", he: "מקור" },
   "label.change": { en: "Change", he: "שינוי" },
@@ -47,6 +113,7 @@ const translations: Record<string, Record<Language, string>> = {
   "label.est": { en: "est.", he: "הערכה" },
   "label.lastUpdated": { en: "Last updated", he: "עדכון אחרון" },
   "label.free": { en: "Free & Open Source", he: "חינמי וקוד פתוח" },
+  "label.was": { en: "was", he: "היה" },
   "lang.toggle": { en: "עברית", he: "English" },
 
   // Versions
@@ -100,20 +167,36 @@ const translations: Record<string, Record<Language, string>> = {
   "chart.erosion.source": { en: "CENTCOM / IDF / CSIS satellite analysis", he: "CENTCOM / צה\"ל / ניתוח לווייני CSIS" },
 
   "chart.usMunitions.title": { en: "US Munitions Spending — First 100 Hours", he: "הוצאות חימושים אמריקאיות — 100 שעות ראשונות" },
-  "chart.usMunitions.subtitle": { en: "Breakdown by type: offensive vs defensive", he: "חלוקה לפי סוג: התקפי מול הגנתי" },
+  "chart.usMunitions.subtitle": { 
+    en: "Total US military munitions cost breakdown for the first 100 hours of Operation 'Wrath'. Offensive = cruise missiles & guided bombs. Defensive = interceptors launched to protect allies.", 
+    he: "פירוט עלויות חימושים צבאיים אמריקאיים ב-100 השעות הראשונות של מבצע 'זעם'. התקפי = טילי שיוט ופצצות מונחות. הגנתי = מיירטים שנורו להגנת בעלות ברית."
+  },
   "chart.usMunitions.source": { en: "CENTCOM / US Navy / USAF", he: "CENTCOM / חיל הים / חיל האוויר האמריקאי" },
 
   "chart.uranium.title": { en: "Iran Uranium Enrichment — 60% Stockpile", he: "העשרת אורניום איראנית — מלאי 60%" },
   "chart.uranium.subtitle": { en: "Growth of near-weapons-grade material (kg) + IAEA access status", he: "צמיחת חומר קרוב לדרגה צבאית (ק\"ג) + סטטוס גישת סבא\"א" },
   "chart.uranium.source": { en: "IAEA reports / FAS / SIPRI", he: "דוחות סבא\"א / FAS / SIPRI" },
 
-  "chart.missileRadar.title": { en: "Iranian Missile Arsenal — Range & Warhead", he: "ארסנל הטילים האיראני — טווח וראש קרב" },
-  "chart.missileRadar.subtitle": { en: "Radar view: range (km) and warhead weight (kg)", he: "תצוגת רדאר: טווח (ק\"מ) ומשקל ראש קרב (ק\"ג)" },
-  "chart.missileRadar.source": { en: "CSIS Missile Defense Project / IISS", he: "פרויקט הגנת טילים CSIS / IISS" },
+  "chart.missileRadar.title": { en: "Iranian Missile Arsenal — Full Breakdown", he: "ארסנל הטילים האיראני — פירוט מלא" },
+  "chart.missileRadar.subtitle": { 
+    en: "Complete inventory: type, quantity, range, warhead, unit cost, and production capacity",
+    he: "מלאי מלא: סוג, כמות, טווח, ראש קרב, עלות יחידה ויכולת ייצור"
+  },
+  "chart.missileRadar.source": { en: "CSIS Missile Defense Project / IISS / SIPRI", he: "פרויקט הגנת טילים CSIS / IISS / SIPRI" },
 
   "chart.casualty.title": { en: "Iran Casualties — Military vs Civilian", he: "הרוגים באיראן — צבאי מול אזרחי" },
   "chart.casualty.subtitle": { en: "Breakdown of Iranian fatalities from coalition strikes", he: "פילוח הרוגים איראנים מתקיפות הקואליציה" },
   "chart.casualty.source": { en: "MoH / Reuters / Al Jazeera Mar 2026", he: "משרד הבריאות / רויטרס / אל-ג'זירה מרץ 2026" },
+
+  // Missile table headers
+  "missile.name": { en: "Missile", he: "טיל" },
+  "missile.type": { en: "Type", he: "סוג" },
+  "missile.range": { en: "Range", he: "טווח" },
+  "missile.warhead": { en: "Warhead", he: "ראש קרב" },
+  "missile.qty": { en: "Pre-war Qty", he: "כמות טרום מלחמה" },
+  "missile.cost": { en: "Unit Cost", he: "עלות יחידה" },
+  "missile.production": { en: "Est. Production", he: "ייצור מוערך" },
+  "missile.propulsion": { en: "Propulsion", he: "הנעה" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
