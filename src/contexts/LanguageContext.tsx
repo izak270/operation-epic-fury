@@ -136,6 +136,7 @@ const translations: Record<string, Record<Language, string>> = {
   // Navigation
   "nav.data": { en: "Data", he: "נתונים" },
   "nav.charts": { en: "Charts", he: "גרפים" },
+  "nav.map": { en: "Map", he: "מפה" },
 
   // Charts section
   "charts.section.title": { en: "Intelligence Charts", he: "גרפים מודיעיניים" },
