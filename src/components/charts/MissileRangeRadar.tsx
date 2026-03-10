@@ -27,7 +27,11 @@ const propulsionLabels: Record<string, Record<string, string>> = {
   turbojet: { en: "Turbojet", he: "טורבוסילון" },
 };
 
-const MissileRangeRadar: React.FC = () => {
+interface MissileRangeRadarProps {
+  highlightId?: string | null;
+}
+
+const MissileRangeRadar: React.FC<MissileRangeRadarProps> = ({ highlightId }) => {
   const { lang, t } = useLanguage();
   const iranMissiles = getIranMissiles();
 
