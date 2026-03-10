@@ -92,9 +92,20 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-3xl mx-auto px-4 sm:px-8 py-8">
+      <footer className="max-w-3xl mx-auto px-4 sm:px-8 py-8 space-y-3">
         <p className="text-xs text-muted-foreground font-frank text-center">
           {t("footer.disclaimer")}
+        </p>
+        <p className="text-xs text-muted-foreground font-heebo text-center">
+          Powered by{" "}
+          <a
+            href="https://aiorchestration.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-foreground hover:underline"
+          >
+            AIORCHESTRATION.AI
+          </a>
         </p>
       </footer>
     </div>
