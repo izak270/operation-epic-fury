@@ -5,6 +5,7 @@ import ForceModule from "@/components/ForceModule";
 import ChartsSection from "@/components/ChartsSection";
 import ForecastSection from "@/components/ForecastSection";
 import MissileRangeMap from "@/components/charts/MissileRangeMap";
+import FeedbackForm from "@/components/FeedbackForm";
 
 const Index = () => {
   const { t, toggle, lang } = useLanguage();
