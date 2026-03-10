@@ -177,6 +177,10 @@ const translations: Record<string, Record<Language, string>> = {
   "chart.uranium.subtitle": { en: "Growth of near-weapons-grade material (kg) + IAEA access status", he: "צמיחת חומר קרוב לדרגה צבאית (ק\"ג) + סטטוס גישת סבא\"א" },
   "chart.uranium.source": { en: "IAEA reports / FAS / SIPRI", he: "דוחות סבא\"א / FAS / SIPRI" },
 
+  "chart.missileMap.title": { en: "Missile Range Map — Iran → Israel", he: "מפת טווחי טילים — איראן → ישראל" },
+  "chart.missileMap.subtitle": { en: "Geographic range visualization of Iranian ballistic missiles from western Iran launch points", he: "הדמיה גיאוגרפית של טווחי טילים בליסטיים איראניים מנקודות שיגור במערב איראן" },
+  "chart.missileMap.source": { en: "CSIS Missile Defense Project / IISS", he: "פרויקט הגנת טילים CSIS / IISS" },
+
   "chart.missileRadar.title": { en: "Iranian Missile Arsenal — Full Breakdown", he: "ארסנל הטילים האיראני — פירוט מלא" },
   "chart.missileRadar.subtitle": { 
     en: "Complete inventory: type, quantity, range, warhead, unit cost, and production capacity",

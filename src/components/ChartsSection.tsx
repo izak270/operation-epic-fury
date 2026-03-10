@@ -9,6 +9,7 @@ import CapabilityErosionChart from "@/components/charts/CapabilityErosionChart";
 import USMunitionsTreemap from "@/components/charts/USMunitionsTreemap";
 import UraniumStatusChart from "@/components/charts/UraniumStatusChart";
 import MissileRangeRadar from "@/components/charts/MissileRangeRadar";
+import MissileRangeMap from "@/components/charts/MissileRangeMap";
 import CasualtyBreakdownChart from "@/components/charts/CasualtyBreakdownChart";
 
 interface ChartCard {
@@ -69,6 +70,12 @@ const ChartsSection: React.FC = () => {
       subtitleKey: "chart.uranium.subtitle",
       sourceKey: "chart.uranium.source",
       component: <UraniumStatusChart />,
+    },
+    {
+      titleKey: "chart.missileMap.title",
+      subtitleKey: "chart.missileMap.subtitle",
+      sourceKey: "chart.missileMap.source",
+      component: <MissileRangeMap />,
     },
     {
       titleKey: "chart.missileRadar.title",
