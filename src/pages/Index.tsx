@@ -3,11 +3,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { dataVersions } from "@/data/militaryData";
 import ForceModule from "@/components/ForceModule";
 import ChartsSection from "@/components/ChartsSection";
+import MissileRangeMap from "@/components/charts/MissileRangeMap";
 
 const Index = () => {
   const { t, toggle, lang } = useLanguage();
   const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1);
-  const [activeTab, setActiveTab] = useState<"data" | "charts">("data");
+  const [activeTab, setActiveTab] = useState<"data" | "charts" | "map">("data");
   const currentVersion = dataVersions[versionIdx];
 
   return (
@@ -73,26 +74,19 @@ const Index = () => {
 
           {/* Tab nav */}
           <div className="flex rounded-lg border border-border overflow-hidden">
-            <button
-              onClick={() => setActiveTab("data")}
-              className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
-                activeTab === "data"
-                  ? "bg-foreground text-background"
-                  : "hover:bg-muted text-muted-foreground"
-              }`}
-            >
-              {t("nav.data")}
-            </button>
-            <button
-              onClick={() => setActiveTab("charts")}
-              className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
-                activeTab === "charts"
-                  ? "bg-foreground text-background"
-                  : "hover:bg-muted text-muted-foreground"
-              }`}
-            >
-              {t("nav.charts")}
-            </button>
+            {(["data", "charts", "map"] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-1.5 text-xs font-heebo font-bold transition-all ${
+                  activeTab === tab
+                    ? "bg-foreground text-background"
+                    : "hover:bg-muted text-muted-foreground"
+                }`}
+              >
+                {t(`nav.${tab}`)}
+              </button>
+            ))}
           </div>
         </div>
       </header>
@@ -105,8 +99,25 @@ const Index = () => {
               <ForceModule key={`${currentVersion.id}-${cat.id}`} category={cat} index={i} />
             ))}
           </>
-        ) : (
+        ) : activeTab === "charts" ? (
           <ChartsSection />
+        ) : (
+          <section className="px-4 sm:px-8 py-8 space-y-5">
+            <div className="pb-3 mb-2">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1 h-5 rounded-full bg-primary" />
+                <h2 className="font-heebo font-black text-lg sm:text-xl">
+                  {t("chart.missileMap.title")}
+                </h2>
+              </div>
+              <p className="text-xs text-muted-foreground font-frank mt-1 ltr:ml-3 rtl:mr-3">
+                {t("chart.missileMap.subtitle")}
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+              <MissileRangeMap />
+            </div>
+          </section>
         )}
       </main>
 
