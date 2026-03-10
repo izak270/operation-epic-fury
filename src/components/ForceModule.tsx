@@ -154,7 +154,7 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
                     {changeNum > 0 ? `+${formatVal(changeNum, category.format)}` : formatVal(changeNum, category.format)}
                   </span>
                   {beforeVal !== null && (
-                    <span className="text-[9px] text-muted-foreground font-frank tabular-nums" dir="ltr">
+                    <span className="text-[11px] text-foreground/60 font-heebo font-semibold tabular-nums" dir="ltr">
                       {t("label.was")} {formatVal(beforeVal, category.format)}
                     </span>
                   )}
