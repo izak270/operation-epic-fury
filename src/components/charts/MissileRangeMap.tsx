@@ -564,7 +564,10 @@ const MissileRangeMap: React.FC<MissileRangeMapProps> = ({ onMissileClick }) => 
               }`}
               onMouseEnter={() => setActiveId(m.id)}
               onMouseLeave={() => setActiveId(null)}
-              onClick={() => setActiveId(activeId === m.id ? null : m.id)}
+              onClick={() => {
+                setActiveId(activeId === m.id ? null : m.id);
+                onMissileClick?.(m.id);
+              }}
             >
               <div className="flex items-center gap-2 mb-0.5">
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />

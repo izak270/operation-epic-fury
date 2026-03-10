@@ -64,7 +64,7 @@ const MissileRangeRadar: React.FC<MissileRangeRadarProps> = ({ highlightId }) =>
             {iranMissiles.map((m, i) => {
               const prod = productionEstimates[m.id];
               return (
-                <tr key={m.id} className={`border-b border-border/50 transition-colors hover:bg-muted/20 ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
+                <tr key={m.id} id={`missile-row-${m.id}`} className={`border-b border-border/50 transition-all duration-500 hover:bg-muted/20 ${highlightId === m.id ? "bg-primary/20" : i % 2 === 0 ? "" : "bg-muted/10"}`}>
                   <td className="px-3 py-2.5">
                     <div className="font-heebo font-bold text-foreground text-sm">
                       {lang === "he" ? m.nameHe : m.nameEn}
