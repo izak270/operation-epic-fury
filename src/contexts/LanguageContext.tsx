@@ -232,6 +232,21 @@ const translations: Record<string, Record<Language, string>> = {
   "missile.cost": { en: "Unit Cost", he: "עלות יחידה" },
   "missile.production": { en: "Est. Production", he: "ייצור מוערך" },
   "missile.propulsion": { en: "Propulsion", he: "הנעה" },
+
+  // Feedback
+  "feedback.button": { en: "Feedback", he: "משוב" },
+  "feedback.title": { en: "Send Feedback", he: "שלח משוב" },
+  "feedback.type.correction": { en: "Data Correction", he: "תיקון נתון" },
+  "feedback.type.suggestion": { en: "Suggestion", he: "הצעה" },
+  "feedback.type.feature": { en: "New Feature", he: "פיצ׳ר חדש" },
+  "feedback.type.other": { en: "Other", he: "אחר" },
+  "feedback.category.placeholder": { en: "Category (e.g. missiles, charts...)", he: "קטגוריה (למשל טילים, גרפים...)" },
+  "feedback.message.placeholder": { en: "Describe your suggestion or correction...", he: "תאר את ההצעה או התיקון..." },
+  "feedback.contact.placeholder": { en: "Contact (optional — email / Twitter)", he: "פרטי קשר (אופציונלי — אימייל / טוויטר)" },
+  "feedback.submit": { en: "Send", he: "שלח" },
+  "feedback.sending": { en: "Sending...", he: "שולח..." },
+  "feedback.success": { en: "Thanks! Received.", he: "תודה! התקבל." },
+  "feedback.error": { en: "Error, try again", he: "שגיאה, נסה שוב" },
 };
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
