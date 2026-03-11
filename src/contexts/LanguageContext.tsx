@@ -120,7 +120,8 @@ const translations: Record<string, Record<Language, string>> = {
   "version.v0": { en: "v0 — Baseline 2024", he: "v0 — בסיס 2024" },
   "version.v1": { en: "v1 — March 2026", he: "v1 — מרץ 2026" },
   "version.v2": { en: "v2 — Update Mar 10, 2026", he: "v2 — עדכון 10 במרץ 2026" },
-  "version.v3": { en: "v3 — Deep Research Mar 11", he: "v3 — מחקר עומק 11 במרץ" },
+  "version.v3": { en: "v3 — Verified Mar 11", he: "v3 — מאומת 11 במרץ" },
+  "version.v4": { en: "v4 — Deep Research Auto", he: "v4 — מחקר עומק אוטומטי" },
   "version.label": { en: "Version", he: "גרסה" },
 
   // Footer
