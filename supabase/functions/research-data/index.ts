@@ -200,8 +200,16 @@ async function pollForResults(apiKey: string, interactionId: string): Promise<st
   throw new Error("Deep Research timed out after 10 minutes");
 }
 
-function extractJsonFromText(text: string): any[] {
-  // Try to extract JSON from code block
+function extractJsonFromText(text: string, tag?: string): any[] {
+  // Try tagged code block first
+  if (tag) {
+    const taggedMatch = text.match(new RegExp("```" + tag + "\\s*\\n?([\\s\\S]*?)```"));
+    if (taggedMatch) {
+      return JSON.parse(taggedMatch[1].trim());
+    }
+  }
+
+  // Try generic json code block
   const codeBlockMatch = text.match(/```json\s*\n?([\s\S]*?)```/);
   if (codeBlockMatch) {
     return JSON.parse(codeBlockMatch[1].trim());
@@ -213,7 +221,7 @@ function extractJsonFromText(text: string): any[] {
     return JSON.parse(arrayMatch[0]);
   }
 
-  throw new Error("Could not extract JSON array from Deep Research output");
+  throw new Error(`Could not extract JSON array${tag ? ` (tag: ${tag})` : ""} from Deep Research output`);
 }
 
 serve(async (req) => {
