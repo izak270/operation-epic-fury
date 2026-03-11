@@ -145,6 +145,8 @@ const Index = () => {
                 {t("chart.missileRadar.title")}
               </h3>
               <MissileRangeRadar highlightId={highlightedMissileId} />
+            </div>
+          </section>
         )}
       </main>
 
