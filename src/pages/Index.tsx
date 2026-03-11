@@ -138,9 +138,13 @@ const Index = () => {
               </p>
             </div>
             <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
-              <MissileRangeMap />
+              <MissileRangeMap onMissileClick={handleMapMissileClick} />
             </div>
-          </section>
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mt-5">
+              <h3 className="font-heebo font-bold text-sm sm:text-base text-foreground mb-4">
+                {t("chart.missileRadar.title")}
+              </h3>
+              <MissileRangeRadar highlightId={highlightedMissileId} />
         )}
       </main>
 
