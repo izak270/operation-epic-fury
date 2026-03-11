@@ -94,19 +94,20 @@ serve(async (req) => {
     console.log(`Status: ${status}`);
 
     // Still in progress
-    if (status !== "COMPLETED" && status !== "DONE" && status !== "FAILED" && status !== "ERROR") {
+    if (status === "COMPLETED" || status === "DONE") {
+      // Fall through to parse results
+    } else if (status === "FAILED" || status === "ERROR" || status === "CANCELLED" || status === "cancelled") {
+      throw new Error(`Deep Research ${status}: ${data.error?.message || "Task was cancelled or failed"}`);
+    } else {
+      // Still in progress
       return new Response(JSON.stringify({
         status: "in_progress",
+        raw_status: status,
         interaction_id: interactionId,
         message: "Research still in progress. Poll again in 10-15 seconds.",
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-    }
-
-    // Failed
-    if (status === "FAILED" || status === "ERROR") {
-      throw new Error(`Deep Research failed: ${data.error?.message || "Unknown error"}`);
     }
 
     // Completed — extract and store results
