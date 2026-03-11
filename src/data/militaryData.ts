@@ -515,6 +515,158 @@ const v3Categories: ForceCategory[] = [
   },
 ];
 
+// v4 — Deep Research automated update (March 11, 2026 evening)
+// Source: Gemini Deep Research via GlobalFirepower 2026 + CSIS + open sources
+const v4Categories: ForceCategory[] = [
+  {
+    id: "active",
+    labelKey: "cat.active",
+    data: { usa: 1333030, israel: 169500, iran: 610000 },
+    change: { usa: -8270, israel: 0, iran: 0 },
+    source: "GlobalFirepower 2026 (Deep Research)",
+  },
+  {
+    id: "reserve",
+    labelKey: "cat.reserve",
+    data: { usa: 799500, israel: 465000, iran: 350000 },
+    change: { usa: -500, israel: 0, iran: 0 },
+    source: "GlobalFirepower 2026 (Deep Research)",
+  },
+  {
+    id: "aircraft",
+    labelKey: "cat.aircraft",
+    data: { usa: 2717, israel: 284, iran: 209 },
+    change: { usa: 867, israel: 43, iran: 17 },
+    source: "GlobalFirepower 2026 (Deep Research)",
+    note: { usa: "1791 fighters + 926 attack", israel: "239 fighters + 45 attack", iran: "188 fighters + 21 attack" },
+  },
+  {
+    id: "tanks",
+    labelKey: "cat.tanks",
+    data: { usa: 5500, israel: 1300, iran: 1996 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "IISS 2026 (adjusted from GFP all-armor totals)",
+    note: { usa: "GFP total armor: 414,326", israel: "GFP total armor: 63,680", iran: "GFP total armor: 78,614" },
+  },
+  {
+    id: "naval",
+    labelKey: "cat.naval",
+    data: { usa: 465, israel: 67, iran: 109 },
+    change: { usa: -15, israel: 0, iran: 8 },
+    source: "GlobalFirepower 2026 (Deep Research)",
+  },
+  {
+    id: "ammunition",
+    labelKey: "cat.ammunition",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Classified — Deep Research",
+    format: "number",
+    note: { usa: "highly dynamic", israel: "PGM stocks classified", iran: "classified" },
+  },
+  {
+    id: "interceptors",
+    labelKey: "cat.interceptors",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Classified — Deep Research",
+    note: { usa: "SM-3/PAC-3/THAAD classified", israel: "ID/DS/Arrow classified", iran: "SAM stocks classified" },
+  },
+  {
+    id: "air_defense",
+    labelKey: "cat.air_defense",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Classified — Deep Research",
+    note: { usa: "battery count unavailable", israel: "ID/DS/Arrow classified", iran: "Bavar-373/S-300 classified" },
+  },
+  {
+    id: "uav_fleet",
+    labelKey: "cat.uav_fleet",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Classified / Unavailable — Deep Research",
+    note: { iran: "mass production ongoing" },
+  },
+  {
+    id: "missiles",
+    labelKey: "cat.missiles",
+    data: { usa: "N/A", israel: "N/A", iran: 3000 },
+    change: { usa: 0, israel: 0, iran: 1800 },
+    source: "CSIS Missile Threat (Deep Research)",
+    note: { usa: "classified", israel: "Jericho family classified", iran: "broad est. thousands" },
+  },
+  {
+    id: "tel_launchers",
+    labelKey: "cat.tel_launchers",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "CSIS Missile Threat — classified",
+  },
+  {
+    id: "budget",
+    labelKey: "cat.budget",
+    data: { usa: 831500000000, israel: 34600000000, iran: 9230000000 },
+    change: { usa: -130100000000, israel: -1400000000, iran: 1330000000 },
+    source: "GlobalFirepower 2026 (Deep Research)",
+    format: "currency",
+    note: { usa: "GFP figure, lower than CBO FY2026", iran: "higher than SIPRI $7.9B" },
+  },
+  {
+    id: "nuclear",
+    labelKey: "cat.nuclear",
+    data: { usa: 5244, israel: 85, iran: "N/A" },
+    change: { usa: 200, israel: -5, iran: 0 },
+    source: "Historical stockpiles (Deep Research)",
+    note: { israel: "est.", iran: "no assembled weapon" },
+  },
+  {
+    id: "munitions_cost",
+    labelKey: "cat.munitions_cost",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Classified — Deep Research",
+    format: "currency",
+  },
+  {
+    id: "mil_kia",
+    labelKey: "cat.mil_kia",
+    data: { usa: "N/A", israel: 20646, iran: "N/A" },
+    change: { usa: 0, israel: 19711, iran: 0 },
+    source: "Casualties of the Israel-Hamas war (Deep Research)",
+    note: { israel: "646 KIA + 20,000 rehab", iran: "unverified" },
+  },
+  {
+    id: "civ_killed",
+    labelKey: "cat.civ_killed",
+    data: { usa: "N/A", israel: 1508, iran: "N/A" },
+    change: { usa: 0, israel: 353, iran: 0 },
+    source: "Casualties of the Israel-Hamas war (Deep Research)",
+    note: { israel: "828 Oct 7 + 680 injuries est." },
+  },
+  {
+    id: "civ_killed_other",
+    labelKey: "cat.civ_killed_other",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Deep Research",
+  },
+  {
+    id: "gaza_killed",
+    labelKey: "cat.gaza_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Gaza MoH (Deep Research)",
+  },
+  {
+    id: "lebanon_killed",
+    labelKey: "cat.lebanon_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Lebanon MoH (Deep Research)",
+  },
+];
+
 export const dataVersions: DataVersion[] = [
   {
     id: "v0",
@@ -540,7 +692,13 @@ export const dataVersions: DataVersion[] = [
     date: "2026-03-11",
     categories: v3Categories,
   },
+  {
+    id: "v4",
+    labelKey: "version.v4",
+    date: "2026-03-11",
+    categories: v4Categories,
+  },
 ];
 
 // Default export for backward compat
-export const militaryData = v3Categories;
+export const militaryData = v4Categories;
