@@ -356,6 +356,162 @@ const v2Categories: ForceCategory[] = [
   },
 ];
 
+// v3 — Deep Research automated update (March 11, 2026)
+// Source: Gemini Deep Research agent batch 485219a3
+const v3Categories: ForceCategory[] = [
+  {
+    id: "active",
+    labelKey: "cat.active",
+    data: { usa: 1300000, israel: 170000, iran: 610000 },
+    change: { usa: -28000, israel: 800, iran: 6000 },
+    source: "CFR Feb 2026 / IISS 2026 / Deep Research",
+    note: { usa: "recruitment decline", iran: "stable" },
+  },
+  {
+    id: "reserve",
+    labelKey: "cat.reserve",
+    data: { usa: 800000, israel: 465000, iran: 350000 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "GlobalFirepower 2026 / IDF Mar 2026",
+  },
+  {
+    id: "aircraft",
+    labelKey: "cat.aircraft",
+    data: { usa: 1850, israel: 241, iran: 186 },
+    change: { usa: -2, israel: 6, iran: 58 },
+    source: "USAF Jan 2026 / GFP 2026 / CSIS",
+    note: { usa: "F-35 replacing F-16", iran: "aging fleet, no new deliveries" },
+  },
+  {
+    id: "tanks",
+    labelKey: "cat.tanks",
+    data: { usa: 5500, israel: 1300, iran: 1996 },
+    change: { usa: 0, israel: 20, iran: 56 },
+    source: "IISS 2026 / CSIS Feb 2026",
+    note: { israel: "Merkava V production", iran: "Karrar domestic" },
+  },
+  {
+    id: "naval",
+    labelKey: "cat.naval",
+    data: { usa: 480, israel: 67, iran: 101 },
+    change: { usa: -3, israel: 0, iran: 27 },
+    source: "USN Jan 2026 / Iran Navy Jan 2026",
+    note: { iran: "patrol boats added" },
+  },
+  {
+    id: "ammunition",
+    labelKey: "cat.ammunition",
+    data: { usa: 900, israel: 55, iran: 450 },
+    change: { usa: 30, israel: 7, iran: 30 },
+    source: "DoD Industrial Base Jan 2026 / IDF / Deep Research",
+    format: "number",
+    note: { usa: "replenishment ongoing", israel: "interceptors", iran: "domestic production" },
+  },
+  {
+    id: "interceptors",
+    labelKey: "cat.interceptors",
+    data: { usa: 1600, israel: 820, iran: "N/A" },
+    change: { usa: 24, israel: 40, iran: 0 },
+    source: "MDA Feb 2026 / Rafael / IAI",
+    note: { usa: "SM-2/3/6+PAC-3", israel: "ID+DS+Arrow replenished" },
+  },
+  {
+    id: "air_defense",
+    labelKey: "cat.air_defense",
+    data: { usa: 60, israel: 15, iran: 12 },
+    change: { usa: 0, israel: 0, iran: 4 },
+    source: "MDA Feb 2026 / Iran MoD Feb 2026",
+    note: { iran: "Bavar-373 + Khordad-15 added" },
+  },
+  {
+    id: "uav_fleet",
+    labelKey: "cat.uav_fleet",
+    data: { usa: 1100, israel: 500, iran: 2000 },
+    change: { usa: 143, israel: 20, iran: 800 },
+    source: "DIA Feb 2026 / Janes Feb 2026 / Western Intel",
+    note: { usa: "AI-enabled expansion", iran: "Shahed mass production" },
+  },
+  {
+    id: "missiles",
+    labelKey: "cat.missiles",
+    data: { usa: 1200, israel: 350, iran: 1200 },
+    change: { usa: 0, israel: 10, iran: 400 },
+    source: "UN SC Jan 2026 / IDF / Deep Research",
+    note: { iran: "domestic production recovering" },
+  },
+  {
+    id: "tel_launchers",
+    labelKey: "cat.tel_launchers",
+    data: { usa: "N/A", israel: "N/A", iran: 200 },
+    change: { usa: 0, israel: 0, iran: 80 },
+    source: "DIA Jan 2026 / CENTCOM",
+    note: { iran: "mobile TEL emphasis" },
+  },
+  {
+    id: "budget",
+    labelKey: "cat.budget",
+    data: { usa: 886000000000, israel: 29000000000, iran: 27000000000 },
+    change: { usa: 54500000000, israel: -8200000000, iran: 17000000000 },
+    source: "CBO Feb 2026 / Israel MoF / SIPRI Jan 2026",
+    format: "currency",
+    note: { usa: "FY2026", iran: "est. SIPRI + IISS" },
+  },
+  {
+    id: "nuclear",
+    labelKey: "cat.nuclear",
+    data: { usa: 5044, israel: 90, iran: "N/A" },
+    change: { usa: -456, israel: 0, iran: 0 },
+    source: "SIPRI Jan 2026 / FAS / IAEA Feb 2026",
+    note: { usa: "New START compliance", iran: "enrichment ongoing, no weapon" },
+  },
+  {
+    id: "munitions_cost",
+    labelKey: "cat.munitions_cost",
+    data: { usa: 1665000000, israel: 2100000000, iran: 4500000000 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "CENTCOM / IDF / CSIS est.",
+    format: "currency",
+    note: { usa: "100 hrs", israel: "10 days", iran: "10 days" },
+  },
+  {
+    id: "mil_kia",
+    labelKey: "cat.mil_kia",
+    data: { usa: 12, israel: 935, iran: 4200 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "CENTCOM / IDF / est. Mar 11",
+    note: { usa: "in theater", israel: "since Oct 2023", iran: "est." },
+  },
+  {
+    id: "civ_killed",
+    labelKey: "cat.civ_killed",
+    data: { usa: 0, israel: 1145, iran: 2100 },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "MoH / Reuters / Al Jazeera Mar 11",
+    note: { israel: "inc. Oct 7", iran: "Iran claim" },
+  },
+  {
+    id: "civ_killed_other",
+    labelKey: "cat.civ_killed_other",
+    data: { usa: "N/A", israel: "N/A", iran: "N/A" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Gaza MoH / Lebanon MoH / Lancet",
+  },
+  {
+    id: "gaza_killed",
+    labelKey: "cat.gaza_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Gaza MoH / Lancet Mar 2026",
+  },
+  {
+    id: "lebanon_killed",
+    labelKey: "cat.lebanon_killed",
+    data: { usa: "—", israel: "—", iran: "—" },
+    change: { usa: 0, israel: 0, iran: 0 },
+    source: "Lebanon MoH Nov 2024",
+  },
+];
+
 export const dataVersions: DataVersion[] = [
   {
     id: "v0",
@@ -375,7 +531,13 @@ export const dataVersions: DataVersion[] = [
     date: "2026-03-10",
     categories: v2Categories,
   },
+  {
+    id: "v3",
+    labelKey: "version.v3",
+    date: "2026-03-11",
+    categories: v3Categories,
+  },
 ];
 
 // Default export for backward compat
-export const militaryData = v2Categories;
+export const militaryData = v3Categories;
