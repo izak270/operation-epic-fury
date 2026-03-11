@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { dataVersions } from "@/data/militaryData";
 import ForceModule from "@/components/ForceModule";
 import ChartsSection from "@/components/ChartsSection";
 import ForecastSection from "@/components/ForecastSection";
 import MissileRangeMap from "@/components/charts/MissileRangeMap";
+import MissileRangeRadar from "@/components/charts/MissileRangeRadar";
 import AiChat from "@/components/AiChat";
 
 const Index = () => {
@@ -12,6 +13,24 @@ const Index = () => {
   const [versionIdx, setVersionIdx] = useState(dataVersions.length - 1);
   const [activeTab, setActiveTab] = useState<"data" | "charts" | "forecast" | "map">("data");
   const currentVersion = dataVersions[versionIdx];
+  const [highlightedMissileId, setHighlightedMissileId] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleMapMissileClick = useCallback((id: string) => {
+    setHighlightedMissileId(id);
+    clearTimeout(highlightTimer.current);
+
+    // Scroll to the radar table row
+    setTimeout(() => {
+      const row = document.getElementById(`missile-row-${id}`);
+      row?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+
+    // Clear highlight after 3s
+    highlightTimer.current = setTimeout(() => {
+      setHighlightedMissileId(null);
+    }, 3000);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -119,7 +138,13 @@ const Index = () => {
               </p>
             </div>
             <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
-              <MissileRangeMap />
+              <MissileRangeMap onMissileClick={handleMapMissileClick} />
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mt-5">
+              <h3 className="font-heebo font-bold text-sm sm:text-base text-foreground mb-4">
+                {t("chart.missileRadar.title")}
+              </h3>
+              <MissileRangeRadar highlightId={highlightedMissileId} />
             </div>
           </section>
         )}
