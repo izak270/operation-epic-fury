@@ -251,19 +251,33 @@ serve(async (req) => {
     const researchText = await pollForResults(GEMINI_API_KEY, interactionId);
     console.log("Research output length:", researchText.length);
 
-    // Step 3: Parse JSON from research output
+    // Step 3: Parse force data JSON
     let parsed: any[];
+    let forecastParsed: any[] = [];
+    
     try {
-      parsed = extractJsonFromText(researchText);
+      parsed = extractJsonFromText(researchText, "json-forces");
+    } catch {
+      try {
+        parsed = extractJsonFromText(researchText); // fallback to generic
+      } catch (e) {
+        console.error("Failed to parse forces:", researchText.substring(0, 500));
+        await supabase.from("data_research").insert({
+          category: "parse_error",
+          country: "all",
+          raw_response: researchText.substring(0, 10000),
+          batch_id: batchId,
+        });
+        throw new Error("Failed to parse Deep Research output as JSON");
+      }
+    }
+
+    // Step 3b: Parse forecast JSON
+    try {
+      forecastParsed = extractJsonFromText(researchText, "json-forecast");
+      console.log(`Forecast data parsed: ${forecastParsed.length} days`);
     } catch (e) {
-      console.error("Failed to parse research output:", researchText.substring(0, 500));
-      await supabase.from("data_research").insert({
-        category: "parse_error",
-        country: "all",
-        raw_response: researchText.substring(0, 10000),
-        batch_id: batchId,
-      });
-      throw new Error("Failed to parse Deep Research output as JSON");
+      console.warn("No forecast data found in research output, continuing without it");
     }
 
     if (!Array.isArray(parsed)) throw new Error("Research output is not an array");
@@ -273,6 +287,7 @@ serve(async (req) => {
       .from("data_research")
       .select("category, country, current_value")
       .neq("category", "parse_error")
+      .neq("category", "forecast")
       .order("created_at", { ascending: false })
       .limit(CATEGORIES.length * COUNTRIES.length);
 
@@ -283,7 +298,7 @@ serve(async (req) => {
       }
     }
 
-    // Step 5: Insert research results
+    // Step 5: Insert force research results
     const rows = parsed.map((item: any) => ({
       category: item.category,
       country: item.country,
@@ -296,9 +311,36 @@ serve(async (req) => {
       batch_id: batchId,
     }));
 
+    // Step 5b: Insert forecast results as special category rows
+    const forecastRows = forecastParsed.map((item: any) => ({
+      category: "forecast",
+      country: `day_${item.day}`,
+      current_value: JSON.stringify({
+        day: item.day,
+        date: item.date,
+        ballistic: item.ballistic,
+        uav: item.uav,
+        activeTELs: item.activeTELs,
+        interceptRate: item.interceptRate,
+        confidencePct: item.confidencePct,
+        eventEn: item.eventEn,
+        eventHe: item.eventHe,
+        usMunitionsSpentUSD: item.usMunitionsSpentUSD,
+        iranBMStockRemaining: item.iranBMStockRemaining,
+        israelArrowStockRemaining: item.israelArrowStockRemaining,
+      }),
+      change_description: item.eventEn,
+      source: "Deep Research Forecast",
+      confidence: item.confidencePct > 70 ? "high" : item.confidencePct > 50 ? "medium" : "low",
+      raw_response: null,
+      batch_id: batchId,
+    }));
+
+    const allRows = [...rows, ...forecastRows];
+
     const { error: insertError } = await supabase
       .from("data_research")
-      .insert(rows);
+      .insert(allRows);
 
     if (insertError) {
       console.error("Insert error:", insertError);
@@ -314,9 +356,11 @@ serve(async (req) => {
       batch_id: batchId,
       timestamp: new Date().toISOString(),
       total_items: rows.length,
+      forecast_items: forecastRows.length,
       changes_detected: changedItems.length,
       deep_research_interaction_id: interactionId,
       items: rows,
+      forecast: forecastParsed,
       changes: changedItems,
     };
 
