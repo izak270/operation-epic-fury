@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { ForceCategory } from "@/data/militaryData";
 import SplitFlapNumber from "./SplitFlapNumber";
+import SourceLink from "./SourceLink";
 
 interface ForceModuleProps {
   category: ForceCategory;
