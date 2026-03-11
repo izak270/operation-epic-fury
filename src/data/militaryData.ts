@@ -862,37 +862,3 @@ export const dataVersions: DataVersion[] = [
 
 // Default export for backward compat
 export const militaryData = v5Categories;
-  {
-    id: "v0",
-    labelKey: "version.v0",
-    date: "2024-01",
-    categories: v0Categories,
-  },
-  {
-    id: "v1",
-    labelKey: "version.v1",
-    date: "2026-03",
-    categories: v1Categories,
-  },
-  {
-    id: "v2",
-    labelKey: "version.v2",
-    date: "2026-03-10",
-    categories: v2Categories,
-  },
-  {
-    id: "v3",
-    labelKey: "version.v3",
-    date: "2026-03-11",
-    categories: v3Categories,
-  },
-  {
-    id: "v4",
-    labelKey: "version.v4",
-    date: "2026-03-11",
-    categories: v4Categories,
-  },
-];
-
-// Default export for backward compat
-export const militaryData = v4Categories;
