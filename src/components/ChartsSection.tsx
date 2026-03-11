@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import SourceLink from "./SourceLink";
 
 import FireRateCollapseChart from "@/components/charts/FireRateCollapseChart";
 import DualLaunchChart from "@/components/charts/DualLaunchChart";
