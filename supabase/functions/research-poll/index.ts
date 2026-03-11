@@ -90,8 +90,9 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const status = data.status || data.state;
-    console.log(`Status: ${status}`);
+    const rawStatus = data.status || data.state;
+    const status = (rawStatus || "").toUpperCase();
+    console.log(`Status: ${rawStatus} (normalized: ${status})`);
 
     // Still in progress
     if (status === "COMPLETED" || status === "DONE") {
