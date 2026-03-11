@@ -27,45 +27,23 @@ const CATEGORIES = [
 
 const COUNTRIES = ["usa", "israel", "iran"];
 
-const SYSTEM_PROMPT = `You are a military intelligence research analyst. Your task is to find the most recent, credible data on military force posture for USA, Israel, and Iran.
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
+const DEEP_RESEARCH_AGENT = "deep-research-pro-preview-12-2025";
+const POLL_INTERVAL_MS = 10_000; // 10 seconds
+const MAX_POLL_TIME_MS = 10 * 60 * 1000; // 10 minutes
+
+const RESEARCH_PROMPT = `Research the current military force posture for USA, Israel, and Iran as of today (${new Date().toISOString().split("T")[0]}).
+
+Find the most recent, credible data for these categories:
+${CATEGORIES.join(", ")}
 
 For each category and country combination, provide:
 1. The most current estimated value (number or text)
-2. The source of this data (e.g., "GlobalFirepower 2026", "IISS Military Balance", "SIPRI", "CSIS", "IDF Spokesperson")
-3. Your confidence level: "high" (official/verified source), "medium" (credible estimate), "low" (unverified/single source)
+2. The source of this data (e.g., "GlobalFirepower 2026", "IISS Military Balance", "SIPRI", "CSIS")
+3. Your confidence level: "high" (official/verified), "medium" (credible estimate), "low" (unverified)
 4. A brief note on any recent changes
 
-Focus on data from the last 30 days. Use multiple sources to cross-reference.
-
-IMPORTANT: Respond ONLY with valid JSON. No markdown, no explanation outside the JSON.`;
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("Supabase credentials not configured");
-    }
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const batchId = crypto.randomUUID();
-
-    console.log(`Starting research batch ${batchId}`);
-
-    // Build the research prompt
-    const userPrompt = `Research the current military force posture for USA, Israel, and Iran as of today (${new Date().toISOString().split("T")[0]}).
-
-Provide data for these categories: ${CATEGORIES.join(", ")}
-Countries: ${COUNTRIES.join(", ")}
-
-Return a JSON array of objects with this exact structure:
+Return your findings as a JSON array with this exact structure:
 [
   {
     "category": "active_personnel",
@@ -80,59 +58,167 @@ Return a JSON array of objects with this exact structure:
 Include one object per category-country combination (${CATEGORIES.length * COUNTRIES.length} total).
 For values that are genuinely unknown, use "N/A" as current_value.
 For numerical values, use plain numbers as strings (no commas).
-For budgets, use full numbers in USD (e.g., "831500000000").`;
+For budgets, use full numbers in USD (e.g., "831500000000").
 
-    // Call Lovable AI Gateway
-    const aiResponse = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: userPrompt },
-          ],
-        }),
-      }
-    );
+IMPORTANT: At the end of your report, include the JSON array wrapped in a code block like \`\`\`json ... \`\`\``;
 
-    if (!aiResponse.ok) {
-      const errText = await aiResponse.text();
-      console.error("AI Gateway error:", aiResponse.status, errText);
-      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+async function startDeepResearch(apiKey: string): Promise<string> {
+  const response = await fetch(`${GEMINI_API_BASE}/interactions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
+    body: JSON.stringify({
+      input: RESEARCH_PROMPT,
+      agent: DEEP_RESEARCH_AGENT,
+      background: true,
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    console.error("Deep Research start error:", response.status, errText);
+    throw new Error(`Failed to start Deep Research: ${response.status} - ${errText}`);
+  }
+
+  const data = await response.json();
+  const interactionId = data.name || data.id;
+  if (!interactionId) {
+    console.error("No interaction ID in response:", JSON.stringify(data));
+    throw new Error("No interaction ID returned from Deep Research API");
+  }
+
+  console.log(`Deep Research started: ${interactionId}`);
+  return interactionId;
+}
+
+async function pollForResults(apiKey: string, interactionId: string): Promise<string> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < MAX_POLL_TIME_MS) {
+    const response = await fetch(`${GEMINI_API_BASE}/interactions/${interactionId}`, {
+      method: "GET",
+      headers: {
+        "x-goog-api-key": apiKey,
+      },
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Poll error:", response.status, errText);
+      throw new Error(`Poll failed: ${response.status}`);
     }
 
-    const aiData = await aiResponse.json();
-    const rawContent = aiData.choices?.[0]?.message?.content;
-    if (!rawContent) throw new Error("No content in AI response");
+    const data = await response.json();
+    const status = data.status || data.state;
+    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    console.log(`Poll [${elapsed}s]: status=${status}`);
 
-    console.log("Raw AI response length:", rawContent.length);
+    if (status === "COMPLETED" || status === "DONE") {
+      // Extract text from outputs
+      const outputs = data.outputs || data.result?.outputs || [];
+      let fullText = "";
+      for (const output of outputs) {
+        if (output.text) {
+          fullText += output.text + "\n";
+        } else if (output.parts) {
+          for (const part of output.parts) {
+            if (part.text) fullText += part.text + "\n";
+          }
+        }
+      }
 
-    // Parse JSON from response (handle markdown code blocks)
+      // Fallback: check response content
+      if (!fullText && data.response?.candidates) {
+        for (const candidate of data.response.candidates) {
+          for (const part of candidate.content?.parts || []) {
+            if (part.text) fullText += part.text + "\n";
+          }
+        }
+      }
+
+      if (!fullText.trim()) {
+        console.error("Completed but no text found in:", JSON.stringify(data).substring(0, 1000));
+        throw new Error("Deep Research completed but no text output found");
+      }
+
+      return fullText;
+    }
+
+    if (status === "FAILED" || status === "ERROR") {
+      console.error("Deep Research failed:", JSON.stringify(data));
+      throw new Error(`Deep Research failed: ${data.error?.message || "Unknown error"}`);
+    }
+
+    // Wait before next poll
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+  }
+
+  throw new Error("Deep Research timed out after 10 minutes");
+}
+
+function extractJsonFromText(text: string): any[] {
+  // Try to extract JSON from code block
+  const codeBlockMatch = text.match(/```json\s*\n?([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    return JSON.parse(codeBlockMatch[1].trim());
+  }
+
+  // Try to find a JSON array directly
+  const arrayMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+  if (arrayMatch) {
+    return JSON.parse(arrayMatch[0]);
+  }
+
+  throw new Error("Could not extract JSON array from Deep Research output");
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
+
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error("Supabase credentials not configured");
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const batchId = crypto.randomUUID();
+
+    console.log(`Starting Deep Research batch ${batchId}`);
+
+    // Step 1: Start Deep Research
+    const interactionId = await startDeepResearch(GEMINI_API_KEY);
+
+    // Step 2: Poll for completion
+    const researchText = await pollForResults(GEMINI_API_KEY, interactionId);
+    console.log("Research output length:", researchText.length);
+
+    // Step 3: Parse JSON from research output
     let parsed: any[];
     try {
-      const jsonStr = rawContent.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      parsed = JSON.parse(jsonStr);
+      parsed = extractJsonFromText(researchText);
     } catch (e) {
-      console.error("Failed to parse AI response:", rawContent.substring(0, 500));
-      // Store raw response for debugging
+      console.error("Failed to parse research output:", researchText.substring(0, 500));
       await supabase.from("data_research").insert({
         category: "parse_error",
         country: "all",
-        raw_response: rawContent,
+        raw_response: researchText.substring(0, 10000),
         batch_id: batchId,
       });
-      throw new Error("Failed to parse AI response as JSON");
+      throw new Error("Failed to parse Deep Research output as JSON");
     }
 
-    if (!Array.isArray(parsed)) throw new Error("AI response is not an array");
+    if (!Array.isArray(parsed)) throw new Error("Research output is not an array");
 
-    // Get previous batch for comparison
+    // Step 4: Get previous batch for comparison
     const { data: prevBatch } = await supabase
       .from("data_research")
       .select("category, country, current_value")
@@ -147,7 +233,7 @@ For budgets, use full numbers in USD (e.g., "831500000000").`;
       }
     }
 
-    // Insert research results
+    // Step 5: Insert research results
     const rows = parsed.map((item: any) => ({
       category: item.category,
       country: item.country,
@@ -169,7 +255,7 @@ For budgets, use full numbers in USD (e.g., "831500000000").`;
       throw new Error(`DB insert failed: ${insertError.message}`);
     }
 
-    // Build summary for Notion
+    // Step 6: Build summary
     const changedItems = rows.filter(
       (r) => r.previous_value && r.previous_value !== r.current_value
     );
@@ -179,12 +265,13 @@ For budgets, use full numbers in USD (e.g., "831500000000").`;
       timestamp: new Date().toISOString(),
       total_items: rows.length,
       changes_detected: changedItems.length,
+      deep_research_interaction_id: interactionId,
       items: rows,
       changes: changedItems,
     };
 
     console.log(
-      `Research complete: ${rows.length} items, ${changedItems.length} changes`
+      `Deep Research complete: ${rows.length} items, ${changedItems.length} changes`
     );
 
     return new Response(JSON.stringify(summary), {
