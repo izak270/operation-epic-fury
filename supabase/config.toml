@@ -3,5 +3,11 @@ project_id = "imbigykjgswlakeaytrz"
 [functions.research-data]
 verify_jwt = false
 
+[functions.research-start]
+verify_jwt = false
+
+[functions.research-poll]
+verify_jwt = false
+
 [functions.ai-chat]
 verify_jwt = false
