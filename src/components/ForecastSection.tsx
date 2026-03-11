@@ -1,6 +1,7 @@
 import React from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine, ComposedChart, Bar, Line, ScatterChart, Scatter, ZAxis, Cell } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
+import SourceLink from "./SourceLink";
 import { launchTimeline } from "@/data/launchData";
 import { forecastTimeline } from "@/data/forecastData";
 
@@ -84,7 +85,7 @@ const ForecastSection: React.FC = () => {
       </div>
       {children}
       <p className="text-[10px] text-muted-foreground font-frank mt-3 pt-2 border-t border-border">
-        {t("label.source")}: {source}
+        {t("label.source")}: <SourceLink text={source} />
       </p>
     </div>
   );
