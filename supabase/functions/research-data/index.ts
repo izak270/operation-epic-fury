@@ -34,6 +34,7 @@ const MAX_POLL_TIME_MS = 10 * 60 * 1000; // 10 minutes
 
 const RESEARCH_PROMPT = `Research the current military force posture for USA, Israel, and Iran as of today (${new Date().toISOString().split("T")[0]}).
 
+PART 1 — FORCE DATA
 Find the most recent, credible data for these categories:
 ${CATEGORIES.join(", ")}
 
@@ -43,7 +44,29 @@ For each category and country combination, provide:
 3. Your confidence level: "high" (official/verified), "medium" (credible estimate), "low" (unverified)
 4. A brief note on any recent changes
 
-Return your findings as a JSON array with this exact structure:
+PART 2 — CONFLICT FORECAST (Days 11-30)
+Based on the conflict data from the first 10 days of "Operation Wrath" (Feb 28 – Mar 9, 2026):
+- Day 1: 480 BMs + 720 UAVs, 300 TELs, 87% intercept
+- Day 2: 520 BMs + 850 UAVs (peak), 270 TELs, 85% intercept  
+- Day 5: 250 BMs + 350 UAVs, 160 TELs, 92% intercept
+- Day 10: 40 BMs + 30 UAVs, 120 TELs, 98% intercept
+
+Project the following for days 11, 12, 13, 15, 18, 21, 25, 30:
+- Daily ballistic missile launches (considering TEL attrition, stockpile depletion)
+- Daily UAV launches (considering shift to attrition strategy with cheap Shahed drones)
+- Active TEL count (considering coalition strikes and production rate of ~5-8/month)
+- Intercept rate % (considering interceptor stock depletion, SM-3 at $28M each)
+- Strategic event description (English and Hebrew)
+- Confidence percentage (decreasing over time)
+
+Also provide updated cost projections:
+- Estimated total US munitions spending by day 30
+- Estimated Iranian remaining ballistic missile stockpile
+- Estimated Israeli Arrow interceptor remaining stock
+
+Return TWO JSON arrays wrapped in code blocks:
+
+\`\`\`json-forces
 [
   {
     "category": "active_personnel",
@@ -54,13 +77,32 @@ Return your findings as a JSON array with this exact structure:
     "confidence": "high"
   }
 ]
+\`\`\`
 
 Include one object per category-country combination (${CATEGORIES.length * COUNTRIES.length} total).
-For values that are genuinely unknown, use "N/A" as current_value.
+
+\`\`\`json-forecast
+[
+  {
+    "day": 11,
+    "date": "2026-03-10",
+    "ballistic": 35,
+    "uav": 25,
+    "activeTELs": 118,
+    "interceptRate": 98,
+    "confidencePct": 85,
+    "eventEn": "Description of strategic situation",
+    "eventHe": "תיאור המצב האסטרטגי",
+    "usMunitionsSpentUSD": 2000000000,
+    "iranBMStockRemaining": 800,
+    "israelArrowStockRemaining": 150
+  }
+]
+\`\`\`
+
 For numerical values, use plain numbers as strings (no commas).
 For budgets, use full numbers in USD (e.g., "831500000000").
-
-IMPORTANT: At the end of your report, include the JSON array wrapped in a code block like \`\`\`json ... \`\`\``;
+For values that are genuinely unknown, use "N/A" as current_value.`;
 
 async function startDeepResearch(apiKey: string): Promise<string> {
   const response = await fetch(`${GEMINI_API_BASE}/interactions`, {
@@ -158,8 +200,16 @@ async function pollForResults(apiKey: string, interactionId: string): Promise<st
   throw new Error("Deep Research timed out after 10 minutes");
 }
 
-function extractJsonFromText(text: string): any[] {
-  // Try to extract JSON from code block
+function extractJsonFromText(text: string, tag?: string): any[] {
+  // Try tagged code block first
+  if (tag) {
+    const taggedMatch = text.match(new RegExp("```" + tag + "\\s*\\n?([\\s\\S]*?)```"));
+    if (taggedMatch) {
+      return JSON.parse(taggedMatch[1].trim());
+    }
+  }
+
+  // Try generic json code block
   const codeBlockMatch = text.match(/```json\s*\n?([\s\S]*?)```/);
   if (codeBlockMatch) {
     return JSON.parse(codeBlockMatch[1].trim());
@@ -171,7 +221,7 @@ function extractJsonFromText(text: string): any[] {
     return JSON.parse(arrayMatch[0]);
   }
 
-  throw new Error("Could not extract JSON array from Deep Research output");
+  throw new Error(`Could not extract JSON array${tag ? ` (tag: ${tag})` : ""} from Deep Research output`);
 }
 
 serve(async (req) => {
@@ -201,19 +251,33 @@ serve(async (req) => {
     const researchText = await pollForResults(GEMINI_API_KEY, interactionId);
     console.log("Research output length:", researchText.length);
 
-    // Step 3: Parse JSON from research output
+    // Step 3: Parse force data JSON
     let parsed: any[];
+    let forecastParsed: any[] = [];
+    
     try {
-      parsed = extractJsonFromText(researchText);
+      parsed = extractJsonFromText(researchText, "json-forces");
+    } catch {
+      try {
+        parsed = extractJsonFromText(researchText); // fallback to generic
+      } catch (e) {
+        console.error("Failed to parse forces:", researchText.substring(0, 500));
+        await supabase.from("data_research").insert({
+          category: "parse_error",
+          country: "all",
+          raw_response: researchText.substring(0, 10000),
+          batch_id: batchId,
+        });
+        throw new Error("Failed to parse Deep Research output as JSON");
+      }
+    }
+
+    // Step 3b: Parse forecast JSON
+    try {
+      forecastParsed = extractJsonFromText(researchText, "json-forecast");
+      console.log(`Forecast data parsed: ${forecastParsed.length} days`);
     } catch (e) {
-      console.error("Failed to parse research output:", researchText.substring(0, 500));
-      await supabase.from("data_research").insert({
-        category: "parse_error",
-        country: "all",
-        raw_response: researchText.substring(0, 10000),
-        batch_id: batchId,
-      });
-      throw new Error("Failed to parse Deep Research output as JSON");
+      console.warn("No forecast data found in research output, continuing without it");
     }
 
     if (!Array.isArray(parsed)) throw new Error("Research output is not an array");
@@ -223,6 +287,7 @@ serve(async (req) => {
       .from("data_research")
       .select("category, country, current_value")
       .neq("category", "parse_error")
+      .neq("category", "forecast")
       .order("created_at", { ascending: false })
       .limit(CATEGORIES.length * COUNTRIES.length);
 
@@ -233,7 +298,7 @@ serve(async (req) => {
       }
     }
 
-    // Step 5: Insert research results
+    // Step 5: Insert force research results
     const rows = parsed.map((item: any) => ({
       category: item.category,
       country: item.country,
@@ -246,9 +311,36 @@ serve(async (req) => {
       batch_id: batchId,
     }));
 
+    // Step 5b: Insert forecast results as special category rows
+    const forecastRows = forecastParsed.map((item: any) => ({
+      category: "forecast",
+      country: `day_${item.day}`,
+      current_value: JSON.stringify({
+        day: item.day,
+        date: item.date,
+        ballistic: item.ballistic,
+        uav: item.uav,
+        activeTELs: item.activeTELs,
+        interceptRate: item.interceptRate,
+        confidencePct: item.confidencePct,
+        eventEn: item.eventEn,
+        eventHe: item.eventHe,
+        usMunitionsSpentUSD: item.usMunitionsSpentUSD,
+        iranBMStockRemaining: item.iranBMStockRemaining,
+        israelArrowStockRemaining: item.israelArrowStockRemaining,
+      }),
+      change_description: item.eventEn,
+      source: "Deep Research Forecast",
+      confidence: item.confidencePct > 70 ? "high" : item.confidencePct > 50 ? "medium" : "low",
+      raw_response: null,
+      batch_id: batchId,
+    }));
+
+    const allRows = [...rows, ...forecastRows];
+
     const { error: insertError } = await supabase
       .from("data_research")
-      .insert(rows);
+      .insert(allRows);
 
     if (insertError) {
       console.error("Insert error:", insertError);
@@ -264,9 +356,11 @@ serve(async (req) => {
       batch_id: batchId,
       timestamp: new Date().toISOString(),
       total_items: rows.length,
+      forecast_items: forecastRows.length,
       changes_detected: changedItems.length,
       deep_research_interaction_id: interactionId,
       items: rows,
+      forecast: forecastParsed,
       changes: changedItems,
     };
 
