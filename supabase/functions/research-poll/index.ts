@@ -110,11 +110,6 @@ serve(async (req) => {
       });
     }
 
-    // Failed
-    if (status === "FAILED" || status === "ERROR") {
-      throw new Error(`Deep Research failed: ${data.error?.message || "Unknown error"}`);
-    }
-
     // Completed — extract and store results
     const fullText = extractTextFromResponse(data);
     if (!fullText.trim()) throw new Error("Completed but no text output found");
