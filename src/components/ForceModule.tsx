@@ -86,7 +86,7 @@ const ForceModule: React.FC<ForceModuleProps> = ({ category, index }) => {
           )}
         </div>
         <span className="text-xs text-muted-foreground font-frank text-right flex-shrink-0 max-w-[45%]">
-          <span className="font-bold text-foreground/70">{t("label.source")}:</span> {category.source}
+          <span className="font-bold text-foreground/70">{t("label.source")}:</span> <SourceLink text={category.source} />
         </span>
       </div>
 

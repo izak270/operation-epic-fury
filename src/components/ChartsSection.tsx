@@ -138,7 +138,7 @@ const ChartsSection: React.FC = () => {
           </div>
           {chart.component}
           <p className="text-[10px] text-muted-foreground font-frank mt-3 pt-2 border-t border-border">
-            {t("label.source")}: {t(chart.sourceKey)}
+            {t("label.source")}: <SourceLink text={t(chart.sourceKey)} />
           </p>
         </div>
       ))}

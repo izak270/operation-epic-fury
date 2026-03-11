@@ -84,7 +84,7 @@ const ForecastSection: React.FC = () => {
       </div>
       {children}
       <p className="text-[10px] text-muted-foreground font-frank mt-3 pt-2 border-t border-border">
-        {t("label.source")}: {source}
+        {t("label.source")}: <SourceLink text={source} />
       </p>
     </div>
   );
